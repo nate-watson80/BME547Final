@@ -1,0 +1,7 @@
+pytest
+pytest-pep8
+jupyter
+requests
+Flask
+pymodm
+dnspython
