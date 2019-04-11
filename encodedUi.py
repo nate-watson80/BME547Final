@@ -23,6 +23,13 @@ class Ui_MainWindow(object):
         self.plotting_widget = QtWidgets.QWidget(self.centralwidget)
         self.plotting_widget.setObjectName("plotting_widget")
         self.verticalLayout.addWidget(self.plotting_widget)
+        
+        self.fileName = QtWidgets.QLabel(self.centralwidget)
+        self.fileName.setObjectName("fileName")
+        self.fileName.setAlignment(QtCore.Qt.AlignCenter)
+        self.fileName.setMaximumHeight(20)
+        self.verticalLayout.addWidget(self.fileName)
+        
         self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEdit.setObjectName("lineEdit")
         self.verticalLayout.addWidget(self.lineEdit)
@@ -45,3 +52,4 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtWidgets.QApplication.translate("", "MainWindow", None, -1))
         self.pushButton.setText(QtWidgets.QApplication.translate("", "Open Image", None, -1))
+        self.fileName.setText(QtWidgets.QApplication.translate("", "Press 'Open Image' button'", None, -1))

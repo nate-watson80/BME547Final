@@ -41,6 +41,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.plot_ax.imshow(self.image)
         self.plot_ax.axis('off')
         self.plot_ax.figure.canvas.draw()
+        self.fileName.setText(QtWidgets.QApplication.translate("", filePath, None, -1))
 
 
 def main():
