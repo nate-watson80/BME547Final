@@ -30,12 +30,28 @@ class Ui_MainWindow(object):
         self.fileName.setMaximumHeight(20)
         self.verticalLayout.addWidget(self.fileName)
         
+        self.serverResponse = QtWidgets.QLabel(self.centralwidget)
+        self.serverResponse.setObjectName("serverResponse")
+        self.serverResponse.setAlignment(QtCore.Qt.AlignCenter)
+        self.serverResponse.setMaximumHeight(20)
+        self.verticalLayout.addWidget(self.serverResponse)
+        
         self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEdit.setObjectName("lineEdit")
         self.verticalLayout.addWidget(self.lineEdit)
-        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setObjectName("pushButton")
-        self.verticalLayout.addWidget(self.pushButton)
+
+        self.readImgButton = QtWidgets.QPushButton(self.centralwidget)
+        self.readImgButton.setObjectName("readImgButton")
+        self.verticalLayout.addWidget(self.readImgButton)
+        
+        self.uploadImgButton = QtWidgets.QPushButton(self.centralwidget)
+        self.uploadImgButton.setObjectName("uploadImgButton")
+        self.verticalLayout.addWidget(self.uploadImgButton )
+        
+        self.testServerButton = QtWidgets.QPushButton(self.centralwidget)
+        self.testServerButton.setObjectName("testServerButton")
+        self.verticalLayout.addWidget(self.testServerButton)
+        
         self.horizontalLayout.addLayout(self.verticalLayout)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
@@ -51,5 +67,8 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtWidgets.QApplication.translate("", "MainWindow", None, -1))
-        self.pushButton.setText(QtWidgets.QApplication.translate("", "Open Image", None, -1))
+        self.readImgButton.setText(QtWidgets.QApplication.translate("", "Open Image", None, -1))
+        self.uploadImgButton.setText(QtWidgets.QApplication.translate("", "Upload Image to Server", None, -1))
         self.fileName.setText(QtWidgets.QApplication.translate("", "Press 'Open Image' button'", None, -1))
+        self.testServerButton.setText(QtWidgets.QApplication.translate("", "Test Server!", None, -1))
+        

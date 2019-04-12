@@ -4,7 +4,7 @@ Created on Wed Apr 10 17:46:15 2019
 
 @author: Mars
 """
-import os, sys
+import os, sys, base64, io
 from qtpy import QtCore, QtGui, QtWidgets
 from qtpy.QtWidgets import (QApplication, 
                             QMainWindow, 
@@ -15,6 +15,8 @@ from matplotlib.backends.backend_qt5agg import (
 from matplotlib.figure import Figure
 import cv2
 import numpy as np
+import requests
+
 from encodedUi import Ui_MainWindow
 
 
@@ -22,7 +24,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
-        self.pushButton.clicked.connect(self.openImage)
+        self.readImgButton.clicked.connect(self.openImage)
+        self.testServerButton.clicked.connect(self.testServer)
+        self.uploadImgButton.clicked.connect(self.uploadImage)
         #self.lineEdit.editingFinished.connect(self.goodbyeWorld)
         self.plotting_widget.setLayout(QVBoxLayout())
             
@@ -34,15 +38,33 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.plotting_matplotlib_canvas)
         self.plot_ax = self.plotting_matplotlib_canvas.figure.subplots()
         self.plot_ax.axis('off')
+
     def openImage(self):
-        filePath = QFileDialog.getOpenFileName(self)[0]
-        print("file path: " + str(filePath))
-        self.image = cv2.imread(filePath)
-        self.plot_ax.imshow(self.image)
+        self.filePath = QFileDialog.getOpenFileName(self)[0]
+        print("file path: " + str(self.filePath))
+        self.image = cv2.imread(self.filePath)
+        self.plot_ax.imshow(self.image, cmap='gray')
         self.plot_ax.axis('off')
         self.plot_ax.figure.canvas.draw()
-        self.fileName.setText(QtWidgets.QApplication.translate("", filePath, None, -1))
-
+        self.fileName.setText(QtWidgets.QApplication.translate("", self.filePath, None, -1))
+    
+    def uploadImage(self):
+        with open(self.filePath, "rb") as image_file:
+            b64_imageBytes = base64.b64encode(image_file.read())
+        b64_imgString = str(b64_imageBytes, encoding='utf-8')
+        URL = "http://127.0.0.1:5000/imageUpload"
+        payload = {"client" : "GUI-test",
+                   "image" : b64_imgString}
+        response = requests.post(URL, json=payload).text
+        self.serverResponse.setText(QtWidgets.QApplication.translate("", response, None, -1))
+        
+    def testServer(self):
+        URL = "http://127.0.0.1:5000/"
+        response = requests.get(URL).text
+        self.serverResponse.setText(QtWidgets.QApplication.translate("", response, None, -1))
+        pass
+        
+    ## process the image and then send it back
 
 def main():
     if not QApplication.instance():
