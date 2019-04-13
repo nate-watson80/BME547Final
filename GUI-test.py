@@ -17,9 +17,14 @@ import cv2
 import numpy as np
 import requests
 import json
+import config
 
 from encodedUi import Ui_MainWindow
+from launch_dialog import LaunchDialog
 
+USER = None
+BATCH = None
+IMG_GROUP = None
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
@@ -55,7 +60,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         b64_imgString = str(b64_imageBytes, encoding='utf-8')
         URL = "http://127.0.0.1:5000/imageUpload"
         payload = {"client" : "GUI-test",
-                   "image" : b64_imgString}
+                   "image" : b64_imgString,
+                   "user": USER,
+                   "img_grp": IMG_GROUP,
+                   "batch": BATCH}
         response = requests.post(URL, json=payload).text
         self.serverResponse.setText(QtWidgets.QApplication.translate("", response, None, -1))
         
@@ -72,12 +80,16 @@ def main():
         app = QApplication(sys.argv)
     else:
         app = QApplication.instance()
-    frame = MainWindow()
-    frame.setWindowTitle('D4 Analysis Client')
-    
-    frame.show()
-    app.exec_()
-
+    app.setWindowIcon(QtGui.QIcon(config.ICON))
+    window = LaunchDialog()
+    data = window.get_data()
+    USER, BATCH, IMG_GROUP = data['user'], data['batch'], data['img_grp']
+    if USER and BATCH and IMG_GROUP: 
+        frame = MainWindow()
+        frame.setWindowTitle(config.TITLE)
+        frame.show()
+        app.exec_()
+    app.quit()
 
 if __name__ == '__main__':
     main()

@@ -12,10 +12,13 @@ import base64
 import cv2
 from matplotlib import pyplot as plt
 import matplotlib.image as mpimg
+from pymongo import MongoClient
+from datetime import datetime
 
 
 app = Flask(__name__)
-
+client = MongoClient()
+db = client.test_database
 
 @app.route("/", methods=['GET'])
 def server_on():
@@ -29,11 +32,22 @@ def imageUpload():
     in_data = request.get_json()
     str_img_encoded = in_data["image"]
     str_img = base64.b64decode(str_img_encoded)
-    with open("sent-imgX.tiff", "wb") as out_file:
-        out_file.write(str_img)
-    out_data = "Server has received payload from " + in_data["client"]
+    spot_data, processed_img = dummy_process_image(str_img)
+    data = {
+        "user": in_data["user"],
+        "timestamp": datetime.utcnow(),
+        "spots": spot_data,
+        "img_grp": in_data["img_grp"],
+        "image": processed_img
+    }
+    img_id = db.d4Images.insert_one(data).inserted_id
+    out_data = ("Server has received payload from " + in_data["client"] +
+        " inserted into db with id " + str(img_id))
     
     return out_data
+
+def dummy_process_image(str_img):
+    return [], str_img
     
 if __name__ == '__main__':
     app.run()
