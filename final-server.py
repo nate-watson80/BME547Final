@@ -10,6 +10,9 @@ import numpy as np
 import os, io
 import base64
 import cv2
+from matplotlib import pyplot as plt
+import matplotlib.image as mpimg
+
 
 app = Flask(__name__)
 
@@ -24,8 +27,12 @@ def server_on():
 @app.route("/imageUpload", methods=['POST'])
 def imageUpload():
     in_data = request.get_json()
+    str_img_encoded = in_data["image"]
+    str_img = base64.b64decode(str_img_encoded)
+    with open("sent-imgX.tiff", "wb") as out_file:
+        out_file.write(str_img)
     out_data = "Server has received payload from " + in_data["client"]
-    print(in_data["image"][0])
+    
     return out_data
     
 if __name__ == '__main__':
