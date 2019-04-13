@@ -16,6 +16,7 @@ from matplotlib.figure import Figure
 import cv2
 import numpy as np
 import requests
+import json
 
 from encodedUi import Ui_MainWindow
 
