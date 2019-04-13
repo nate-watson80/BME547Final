@@ -37,6 +37,7 @@ def imageUpload():
         "user": in_data["user"],
         "timestamp": datetime.utcnow(),
         "spots": spot_data,
+        "batch": in_data["batch"],
         "img_grp": in_data["img_grp"],
         "image": processed_img
     }
