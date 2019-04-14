@@ -41,7 +41,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, user, batch, img_grp, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
-        self.importact.triggered.connect(self.openImage)
+        #self.importact.triggered.connect(self.openImage)
         self.readImgButton.clicked.connect(self.openImage)
         self.testServerButton.clicked.connect(self.testServer)
         self.uploadImgButton.clicked.connect(self.uploadImage)
@@ -70,6 +70,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return
         self.filePath = newFilePath
         self.image = cv2.imread(newFilePath)
+        self.plot_ax.clear()
         self.plot_ax.imshow(self.image, cmap='gray')
         self.plot_ax.axis('off')
         self.plot_ax.figure.canvas.draw()
@@ -87,6 +88,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                    "batch": self.batch}
         response = requests.post(URL, json=payload)
         image_rgb = decodeImage(response.json()['ver_Img'], color = True)
+        self.plot_ax.clear()
         self.plot_ax.imshow(image_rgb, interpolation='nearest')
         self.plot_ax.axis('off')
         self.plot_ax.figure.canvas.draw()

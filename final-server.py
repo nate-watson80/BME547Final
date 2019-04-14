@@ -33,13 +33,14 @@ def server_on():
 def imageUpload():
     in_data = request.get_json()
     pattern = get_pattern(in_data)
-    if !pattern:
+    if not pattern:
         return jsonify({"error": "Batch not recognized contact distributor."}), 400
     servCode, errMsg = validate_image(in_data)
     if errMsg:
         return jsonify({"error": errMsg}), servCode
-    matched_data = patternMatching(in_data, pattern)
-    orig_img_id = db.d4OrigImg.insert_one({"image": in_data['image']}).inserted_id
+    matched_data = patternMatching(in_data['image'], pattern)
+    binary_d4OrigImage = base64.b64decode(in_data['image'])
+    orig_img_id = db.d4OrigImg.insert_one({"image": binary_d4OrigImage}).inserted_id
     matched_img_id = db.d4MatchedImg.insert_one({"image": matched_data['ver_Img']}).inserted_id
     data = {
         "user": in_data["user"],
@@ -55,7 +56,7 @@ def imageUpload():
 
 def get_pattern(data):
     batch = data['batch']
-    return db.patterns.findOne({"batch": batch})
+    return db.patterns.find_one({"batch": batch})
 
 
 def circlePixelID(circleData): # output pixel locations of all circles within the list,
@@ -136,7 +137,8 @@ def patternMatching(encoded_image, pattern):
             pixelBrightnesses.append(rawImg16b[eachPixel[1], eachPixel[0]])
         avgIntensity = round(np.array(pixelBrightnesses).mean(),4)
         circleBrightnesses.append(avgIntensity)
-        
+
+    verImg = cv2.pyrDown(verImg) # downsizes
     cv2.imwrite("verification-img.tiff", verImg)
     verImgStr = encodeImage(verImg)
     payload = {"ver_Img" : verImgStr,
