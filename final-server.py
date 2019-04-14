@@ -52,7 +52,10 @@ def imageUpload():
     }
     img_id = db.d4Images.insert_one(data)
     return jsonify(matched_data), 200
-    
+
+def get_pattern(data):
+    batch = data['batch']
+    return db.patterns.findOne({"batch": batch}) 
 
 def circlePixelID(circleData): # output pixel locations of all circles within the list,
     pixelLocations = []
@@ -135,7 +138,7 @@ def patternMatching(encoded_image, encoded_pattern):
                "intensities" : circleBrightnesses}
     return payload
 
-def validate_patternMatching(in_data):
+def validate_image(in_data):
     return 200, None
 
 if __name__ == '__main__':
