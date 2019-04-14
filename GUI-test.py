@@ -22,10 +22,6 @@ import config
 from encodedUi import Ui_MainWindow
 from launch_dialog import LaunchDialog
 
-USER = None
-BATCH = None
-IMG_GROUP = None
-
 def decodeImage(str_encoded_img, color = False):
     decoded_img = base64.b64decode(str_encoded_img)
     buf_img = io.BytesIO(decoded_img)
@@ -42,7 +38,7 @@ def decodeImage(str_encoded_img, color = False):
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
-    def __init__(self, parent=None):
+    def __init__(self, user, batch, img_grp, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
         self.importact.triggered.connect(self.openImage)
@@ -60,6 +56,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self.plotting_matplotlib_canvas)
         self.plot_ax = self.plotting_matplotlib_canvas.figure.subplots()
         self.plot_ax.axis('off')
+        self.user = user
+        self.batch = batch
+        self.img_grp = img_grp
 
     def openImage(self):
         newFilePath = QFileDialog.getOpenFileName(self)[0]
@@ -83,9 +82,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         URL = "http://127.0.0.1:5000/imageUpload"
         payload = {"client" : "GUI-test",
                    "image" : b64_imgString,
-                   "user": USER,
-                   "img_grp": IMG_GROUP,
-                   "batch": BATCH}
+                   "user": self.user,
+                   "img_grp": self.img_grp,
+                   "batch": self.batch}
         response = requests.post(URL, json=payload)
         image_rgb = decodeImage(response.json()['ver_Img'], color = True)
         self.plot_ax.imshow(image_rgb, interpolation='nearest')
@@ -112,7 +111,7 @@ def main():
     data = window.get_data()
     USER, BATCH, IMG_GROUP = data['user'], data['batch'], data['img_grp']
     if USER and BATCH and IMG_GROUP: 
-        frame = MainWindow()
+        frame = MainWindow(USER, BATCH, IMG_GROUP)
         frame.setWindowTitle(config.TITLE)
         frame.show()
         app.exec_()
