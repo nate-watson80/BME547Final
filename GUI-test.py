@@ -56,8 +56,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         URL = "http://127.0.0.1:5000/imageUpload"
         payload = {"client" : "GUI-test",
                    "image" : b64_imgString}
-        response = requests.post(URL, json=payload).text
-        self.serverResponse.setText(QtWidgets.QApplication.translate("", response, None, -1))
+        response = requests.post(URL, json=payload)
+        verImg_buf = response.json()['ver_Img']
+        imgDecoded = base64.b64decode(verImg_buf)
+        image_buf = io.BytesIO(imgDecoded)
+        verImg16b = cv2.imdecode(np.frombuffer(image_buf.read(),
+                                               np.uint16),
+                                 -1)
+        self.plot_ax.imshow(verImg16b)
+        self.plot_ax.axis('off')
+        self.plot_ax.figure.canvas.draw()
+        self.serverResponse.setText(QtWidgets.QApplication.translate("", "verification image shown", None, -1))
         
     def testServer(self):
         URL = "http://127.0.0.1:5000/"

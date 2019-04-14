@@ -85,15 +85,18 @@ idealStdImg = np.zeros(subImg.shape, dtype=np.uint8)
 circlePixels = circlePixelID(circleLocs)
 for eachPixel in circlePixels:
     #print(eachPixel)
-    idealStdImg[eachPixel[1], eachPixel[0]] = 255
+    idealStdImg[eachPixel[1], eachPixel[0]] = 50
+
+# maybe add in "Coffee ring" feature in the standard...
+# need to figure out the best way to find dim spots
 
 cvWindow("testIdeal", idealStdImg, False)
 
-imageOutName = "standard_leptin_1.tiff"
+imageOutName = "standard_leptin_1-lowc.tiff"
 cv2.imwrite(imageOutName, idealStdImg)
 
 stdSpotDict = {"spot info": circleLocs}
-jsonFileOutName = "standard_leptin_1.json"
+jsonFileOutName = "standard_leptin_1-lowc.json"
 out_file = open(jsonFileOutName, "w")
 json.dump(stdSpotDict, out_file)
 out_file.close()

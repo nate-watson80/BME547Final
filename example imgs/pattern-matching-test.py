@@ -10,6 +10,7 @@ from operator import itemgetter
 # for plotting, import these things
 import numpy as np
 import matplotlib.pyplot as plt
+import json
 
 
 arrayCoords = []
@@ -84,10 +85,10 @@ def cvWindow(nameOfWindow, imageToShow, keypressBool):
 
     
 # read image to be analyzed
-rawImg = cv2.imread('slide1_14.tiff', 0)
+rawImg = cv2.imread('slide1_11.tiff', 0)
 
 # read standard image
-standard_pattern = cv2.imread('standard_leptin_1.tiff', 0)
+standard_pattern = cv2.imread('standard_leptin_1-lowc.tiff', 0)
 stdWidth, stdHeight = standard_pattern.shape[::-1]
 
 #pattern match
@@ -101,10 +102,31 @@ _, max_val, _, max_loc = cv2.minMaxLoc(res)
 bottomRightPt = (max_loc[0] + stdWidth,
                  max_loc[1] + stdHeight)
 verImg = cv2.cvtColor(rawImg.copy(), cv2.COLOR_GRAY2RGB)
-cv2.rectangle(verImg, max_loc, bottomRightPt, (0, 0, 255), 2)
+cv2.rectangle(verImg, max_loc, bottomRightPt, (0, 105, 255), 2)
+# cvWindow("verification", verImg, False)
+
+# draw in the circles defined by the dict of the circle locs
+filename = "standard_leptin_1-lowc.json"
+in_file = open(filename, "r")
+circleLocs_dict = json.load(in_file)
+in_file.close()
+
+circleLocs = circleLocs_dict["spot info"]
+
+for eachCircle in circleLocs:
+    cv2.circle(verImg,
+               (max_loc[0] + eachCircle[0],
+                max_loc[1] + eachCircle[1]),
+               eachCircle[2]+4,
+               (30,30,255),
+               3)
+    cv2.circle(verImg,
+               (max_loc[0] + eachCircle[0],
+                max_loc[1] + eachCircle[1]),
+               2,
+               (30,30,255),
+               2)
 cvWindow("verification", verImg, False)
-
-
 
 
 
