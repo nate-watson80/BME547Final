@@ -49,7 +49,7 @@ class LaunchDialog(QtWidgets.QDialog):
         if grp == "":
             err = "Test group cannot be empty"
         if err != "":
-            reply = QtWidgets.QMessageBox.question(self, 'Message', err, QtWidgets.QMessageBox.Yes)
+            reply = QtWidgets.QMessageBox.warning(self, 'Message', err, QtWidgets.QMessageBox.Ok)
         else:
             self.okPressed = True
             self.close()
