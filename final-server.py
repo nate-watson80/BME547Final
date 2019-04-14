@@ -29,7 +29,6 @@ def server_on():
     """
     return "The server is up! Should be ready to rock and roll"
 
-
 @app.route("/imageUpload", methods=['POST'])
 def imageUpload():
     in_data = request.get_json()
@@ -56,7 +55,7 @@ def imageUpload():
 
 def get_pattern(data):
     batch = data['batch']
-    return db.patterns.findOne({"batch": batch}) 
+    return db.patterns.findOne({"batch": batch})
 
 
 def circlePixelID(circleData): # output pixel locations of all circles within the list,
@@ -86,17 +85,15 @@ def decodeImage(str_encoded_img, color = False):
                                 0)
     return orig_img
 
-
 def encodeImage(np_img_array):
     _, img_buffer = cv2.imencode(".tiff", np_img_array)
     img_buffer_enc64 = base64.b64encode(img_buffer)
     str_img_buffer_enc64 = str(img_buffer_enc64, encoding='utf-8')
     return str_img_buffer_enc64
 
-
-def patternMatching(encoded_image, encoded_pattern):
+def patternMatching(encoded_image, pattern):
     rawImg16b = decodeImage(encoded_image)
-    standard_pattern = decodeImage(encoded_pattern)
+    standard_pattern = decodeImage(pattern["image"])
     rows = 2064
     cols = 3088
     img8b = cv2.normalize(rawImg16b.copy(),
@@ -116,13 +113,8 @@ def patternMatching(encoded_image, encoded_pattern):
     _, max_val, _, max_loc = cv2.minMaxLoc(res)
     bottomRightPt = (max_loc[0] + stdWidth,
                      max_loc[1] + stdHeight)
-    cv2.rectangle(verImg, max_loc, bottomRightPt, (0, 105, 255), 15)
-    filename = "standard_leptin_1-lowc.json"
-    in_file = open(filename, "r")
-    circleLocs_dict = json.load(in_file)
-    in_file.close()
-    
-    circleLocs = circleLocs_dict["spot info"]
+    cv2.rectangle(verImg, max_loc, bottomRightPt, (0, 105, 255), 15)    
+    circleLocs = pattern["spot_info"]
 
     circleBrightnesses = []
     for eachCircle in circleLocs:
