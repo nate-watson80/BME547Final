@@ -21,6 +21,21 @@ import json
 from encodedUi import Ui_MainWindow
 
 
+def decodeImage(str_encoded_img, color = False):
+    decoded_img = base64.b64decode(str_encoded_img)
+    buf_img = io.BytesIO(decoded_img)
+    if color:
+        colr_img = cv2.imdecode(np.frombuffer(buf_img.read(),
+                                              np.uint16),
+                                cv2.IMREAD_COLOR)
+        orig_img = cv2.cvtColor(colr_img, cv2.COLOR_BGR2RGB)
+    else:
+        orig_img = cv2.imdecode(np.frombuffer(buf_img.read(),
+                                              np.uint16),
+                                0)
+    return orig_img
+
+
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -57,13 +72,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         payload = {"client" : "GUI-test",
                    "image" : b64_imgString}
         response = requests.post(URL, json=payload)
-        verImg_buf = response.json()['ver_Img']
-        imgDecoded = base64.b64decode(verImg_buf)
-        image_buf = io.BytesIO(imgDecoded)
-        verImg8b = cv2.imdecode(np.frombuffer(image_buf.read(),
-                                               np.uint8),
-                                cv2.IMREAD_COLOR)
-        image_rgb = cv2.cvtColor(verImg8b, cv2.COLOR_BGR2RGB)
+        image_rgb = decodeImage(response.json()['ver_Img'], color = True)
         self.plot_ax.imshow(image_rgb, interpolation='nearest')
         self.plot_ax.axis('off')
         self.plot_ax.figure.canvas.draw()

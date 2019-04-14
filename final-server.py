@@ -25,11 +25,13 @@ def server_on():
     """
     return "The server is up! Should be ready to rock and roll"
 
+
 @app.route("/imageUpload", methods=['POST'])
 def imageUpload():
     in_data = request.get_json()
     output, servCode = patternMatching(in_data)    
     return output, servCode
+
 
 def circlePixelID(circleData): # output pixel locations of all circles within the list,
     pixelLocations = []
@@ -44,13 +46,26 @@ def circlePixelID(circleData): # output pixel locations of all circles within th
     return pixelLocations
 
 
-def decodeImage(str_encoded_img):
+def decodeImage(str_encoded_img, color = False):
     decoded_img = base64.b64decode(str_encoded_img)
     buf_img = io.BytesIO(decoded_img)
-    orig_img = cv2.imdecode(np.frombuffer(buf_img.read(),
-                                          np.uint16),
-                            0)
+    if color:
+        colr_img = cv2.imdecode(np.frombuffer(buf_img.read(),
+                                              np.uint16),
+                                cv2.IMREAD_COLOR)
+        orig_img = cv2.cvtColor(colr_img, cv2.COLOR_BGR2RGB)
+    else:
+        orig_img = cv2.imdecode(np.frombuffer(buf_img.read(),
+                                              np.uint16),
+                                0)
     return orig_img
+
+
+def encodeImage(np_img_array):
+    _, img_buffer = cv2.imencode(".tiff", np_img_array)
+    img_buffer_enc64 = base64.b64encode(img_buffer)
+    str_img_buffer_enc64 = str(img_buffer_enc64, encoding='utf-8')
+    return str_img_buffer_enc64
 
 
 def patternMatching(in_data):
@@ -106,14 +121,13 @@ def patternMatching(in_data):
             circleBrightnesses.append(avgIntensity)
             
         cv2.imwrite("verification-img.tiff", verImg)
-        _, verImg_buf = cv2.imencode(".tiff", verImg)
-        verImg_buf_64 = base64.b64encode(verImg_buf)
-        b64_imgString = str(verImg_buf_64, encoding='utf-8')
-        payload = {"ver_Img" : b64_imgString,
+        verImgStr = encodeImage(verImg)
+        payload = {"ver_Img" : verImgStr,
                    "intensities" : circleBrightnesses}
         return jsonify(payload), 200
     else:
         return errMsg, servCode
+
 
 def validate_patternMatching(in_data):
     return True, 200, "no errors"
