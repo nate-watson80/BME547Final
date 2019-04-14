@@ -60,13 +60,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         verImg_buf = response.json()['ver_Img']
         imgDecoded = base64.b64decode(verImg_buf)
         image_buf = io.BytesIO(imgDecoded)
-        verImg16b = cv2.imdecode(np.frombuffer(image_buf.read(),
-                                               np.uint16),
-                                 -1)
-        self.plot_ax.imshow(verImg16b)
+        verImg8b = cv2.imdecode(np.frombuffer(image_buf.read(),
+                                               np.uint8),
+                                cv2.IMREAD_COLOR)
+        image_rgb = cv2.cvtColor(verImg8b, cv2.COLOR_BGR2RGB)
+        self.plot_ax.imshow(image_rgb, interpolation='nearest')
         self.plot_ax.axis('off')
         self.plot_ax.figure.canvas.draw()
-        self.serverResponse.setText(QtWidgets.QApplication.translate("", "verification image shown", None, -1))
+        self.serverResponse.setText(QtWidgets.QApplication.translate("", "results: " + str(response.json()['intensities']), None, -1))
         
     def testServer(self):
         URL = "http://127.0.0.1:5000/"
