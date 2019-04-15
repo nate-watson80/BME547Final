@@ -29,6 +29,7 @@ def server_on():
     """
     return "The server is up! Should be ready to rock and roll"
 
+
 @app.route("/imageUpload", methods=['POST'])
 def imageUpload():
     in_data = request.get_json()
@@ -53,6 +54,7 @@ def imageUpload():
     }
     img_id = db.d4Images.insert_one(data)
     return jsonify(matched_data), 200
+
 
 def get_pattern(data):
     batch = data['batch']
@@ -83,14 +85,16 @@ def decodeImage(str_encoded_img, color = False):
     else:
         orig_img = cv2.imdecode(np.frombuffer(buf_img.read(),
                                               np.uint16),
-                                0)
+                                -1)
     return orig_img
+
 
 def encodeImage(np_img_array):
     _, img_buffer = cv2.imencode(".tiff", np_img_array)
     img_buffer_enc64 = base64.b64encode(img_buffer)
     str_img_buffer_enc64 = str(img_buffer_enc64, encoding='utf-8')
     return str_img_buffer_enc64
+
 
 def patternMatching(encoded_image, pattern):
     rawImg16b = decodeImage(encoded_image)
@@ -108,7 +112,7 @@ def patternMatching(encoded_image, pattern):
     stdWidth, stdHeight = standard_pattern.shape[::-1]
 
     #pattern match
-    res = cv2.matchTemplate(rawImg16b,
+    res = cv2.matchTemplate(img8b,
                     standard_pattern,
                     cv2.TM_CCORR_NORMED)
     _, max_val, _, max_loc = cv2.minMaxLoc(res)
@@ -116,6 +120,7 @@ def patternMatching(encoded_image, pattern):
                      max_loc[1] + stdHeight)
     cv2.rectangle(verImg, max_loc, bottomRightPt, (0, 105, 255), 15)    
     circleLocs = pattern["spot_info"]
+
 
     circleBrightnesses = []
     for eachCircle in circleLocs:
@@ -145,8 +150,9 @@ def patternMatching(encoded_image, pattern):
                "intensities" : circleBrightnesses}
     return payload
 
+
 def validate_image(in_data):
     return 200, None
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0")
