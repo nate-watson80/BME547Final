@@ -87,7 +87,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                    "user": self.user,
                    "img_grp": self.img_grp,
                    "batch": self.batch,
-                   "filename": self.filePath.split('.')[-1]}
+                   "filename": self.filePath.split('.')[-2]}
         response = requests.post(URL, json=payload)
         image_rgb = decodeImage(response.json()['ver_Img'], color = True)
         self.plot_ax.clear()
