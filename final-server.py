@@ -129,7 +129,17 @@ def patternMatching(encoded_image, pattern):
     res = cv2.matchTemplate(img8b,
                     standard_pattern,
                     cv2.TM_CCORR_NORMED)
-    _, max_val, _, max_loc = cv2.minMaxLoc(res)
+    gausRows = res.shape[1]
+    gausCols = res.shape[0]
+    #generate gaussian weight
+    x, y = np.meshgrid(range(gausRows), range(gausCols))
+    centerRow = (gausRows/2) + 50
+    centerCol = (gausRows/2) - 700
+    sigma = 300
+    gausCenterWeight = np.exp(-( (x-centerRow)**2 + (y-centerCol)**2)/ (2.0 * sigma**2))
+    gausCenterWeight = np.array(gausCenterWeight)
+    weightedRes = res * gausCenterWeight
+    _, max_val, _, max_loc = cv2.minMaxLoc(weightedRes)
     bottomRightPt = (max_loc[0] + stdWidth,
                      max_loc[1] + stdHeight)
     cv2.rectangle(verImg, max_loc, bottomRightPt, (0, 105, 255), 15)    
@@ -156,6 +166,8 @@ def patternMatching(encoded_image, pattern):
             pixelBrightnesses.append(rawImg16b[eachPixel[1], eachPixel[0]])
         avgIntensity = round(np.array(pixelBrightnesses).mean(),4)
         circleBrightnesses.append(avgIntensity)
+##    circleBrightnesses.append([max_loc])
+##    circleBrightnesses.append([centerRow, centerCol])
 
     verImg = cv2.pyrDown(verImg) # downsizes
     cv2.imwrite("verification-img.tiff", verImg)
@@ -169,4 +181,4 @@ def validate_image(in_data):
     return 200, None
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0")
+    app.run()
