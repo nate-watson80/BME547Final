@@ -12,6 +12,9 @@ as dict objects.
 import numpy as np 
 import cv2
 import json
+import base64
+from pymongo import MongoClient
+
 
 arrayCoords = []
 def mouseLocationClick(event,x,y,flags,param):
@@ -47,6 +50,14 @@ def circlePixelID(circleList): # output pixel locations of all circles within th
                 pixelLocations.append([exesInCircle,whysInCircle, radiusCirc, circleIDpointer])
         circleIDpointer = circleIDpointer + 1 
     return pixelLocations
+
+
+def encodeImage(np_img_array):
+    _, img_buffer = cv2.imencode(".tiff", np_img_array)
+    img_buffer_enc64 = base64.b64encode(img_buffer)
+    str_img_buffer_enc64 = str(img_buffer_enc64, encoding='utf-8')
+    return str_img_buffer_enc64
+
 
 #fileName = input("give file name within this directory for std generation: ")
 #imgRaw = cv2.imread(fileName, 0)
@@ -94,12 +105,20 @@ cvWindow("testIdeal", idealStdImg, False)
 
 imageOutName = "standard_leptin_1-lowc.tiff"
 cv2.imwrite(imageOutName, idealStdImg)
+encoded_stdImg = encodeImage(idealStdImg)
 
-stdSpotDict = {"spot info": circleLocs}
-jsonFileOutName = "standard_leptin_1-lowc.json"
-out_file = open(jsonFileOutName, "w")
-json.dump(stdSpotDict, out_file)
-out_file.close()
+client = MongoClient()
+db = client.test_database
+
+stdSpotDict = {"batch" : "leptin-1",
+               "spot_info": circleLocs,
+               "image": encoded_stdImg}
+db.patterns.insert_one(stdSpotDict)
+
+#jsonFileOutName = "standard_leptin_1-lowc.json"
+#out_file = open(jsonFileOutName, "w")
+#json.dump(stdSpotDict, out_file)
+#out_file.close()
 
 
 
