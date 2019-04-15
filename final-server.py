@@ -12,7 +12,6 @@ import base64
 import cv2
 from matplotlib import pyplot as plt
 import matplotlib.image as mpimg
-import json
 from pymongo import MongoClient
 from datetime import datetime
 
