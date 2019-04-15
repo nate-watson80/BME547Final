@@ -29,6 +29,19 @@ def server_on():
     """
     return "The server is up! Should be ready to rock and roll"
 
+@app.route("/pullAllData", methods=['GET'])
+def pullAllData():
+    """sends all analyzed data back in a json with fileNames and list of list of all "spots" intensities
+    """
+    storeFileNames = []
+    storeSpotData = []
+    for eachEntry in db.d4Images.find():
+        storeFileNames.append(eachEntry["filename"])
+        storeSpotData.append(eachEntry["spots"])
+    payload = {"filename": storeFileNames,
+               "spots": storeSpotData}
+    return jsonify(payload), 200
+
 
 @app.route("/imageUpload", methods=['POST'])
 def imageUpload():
@@ -50,7 +63,8 @@ def imageUpload():
         "batch": in_data["batch"],
         "img_grp": in_data["img_grp"],
         "orig_image": orig_img_id,
-        "matched_image": matched_img_id
+        "matched_image": matched_img_id,
+        "filename": in_data['filename']
     }
     img_id = db.d4Images.insert_one(data)
     return jsonify(matched_data), 200
