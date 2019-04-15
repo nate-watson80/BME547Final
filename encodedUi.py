@@ -71,4 +71,3 @@ class Ui_MainWindow(object):
         self.uploadImgButton.setText(QtWidgets.QApplication.translate("", "Upload Image to Server", None, -1))
         self.fileName.setText(QtWidgets.QApplication.translate("", "Press 'Open Image' button'", None, -1))
         self.testServerButton.setText(QtWidgets.QApplication.translate("", "Test Server!", None, -1))
-        
