@@ -86,7 +86,7 @@ def patternMatching(image, standardJsonData):
     for eachCircle in stdCircles:
         circlePixels = circlePixelID(eachCircle)
         for eachPixel in circlePixels:
-            pattern [eachPixel[1], eachPixel[0]] = 50
+            pattern[eachPixel[1], eachPixel[0]] = 50
         cv2.circle(pattern ,
                    (eachCircle[0], eachCircle[1]),
                    eachCircle[2],
@@ -154,6 +154,8 @@ def patternMatching(image, standardJsonData):
         eachCircle[0] = eachCircle[0] + max_loc[0]
         eachCircle[1] = eachCircle[1] + max_loc[1]
         print(eachCircle)
+        # cv2.circle takes (column, row) in just like rect
+        # note that everything is reported the other way around...
         cv2.circle(verImg,
                    (eachCircle[0], eachCircle[1]),
                    eachCircle[2]+4,

@@ -13,7 +13,19 @@ import numpy as np
 import cv2
 import json
 import base64
-from pymongo import MongoClient
+#from pymongo import MongoClient
+
+# PARAMETERS SET UP
+
+automatic = True
+numSpots = 5
+
+
+
+
+
+
+
 
 
 arrayCoords = []
@@ -42,7 +54,7 @@ def circlePixelID(circleList): # output pixel locations of all circles within th
 #        print(eachCircle)
         xCoordCirc = eachCircle[0] # separates the x and y coordinates of the center of the circles and the circle radius 
         yCoordCirc = eachCircle[1]
-        radiusCirc = eachCircle[2] + 2
+        radiusCirc = eachCircle[2]
         for exesInCircle in range(( xCoordCirc - radiusCirc ),( xCoordCirc + radiusCirc )):
             whyRange = np.sqrt(pow(radiusCirc,2) - pow((exesInCircle - xCoordCirc),2)) #calculates the y-coordinates that define the top and bottom bounds of a slice (at x position) of the circle 
             discreteWhyRange = int(whyRange) 
@@ -76,49 +88,83 @@ print(str(cropXCoords))
 print(str(cropYCoords))
 subImg = imgRaw[cropYCoords[0]:cropYCoords[1],cropXCoords[0]:cropXCoords[1]].copy()
 
-# add user input for number of spots
-numSpots = 5
-print("click centers of circles, then click (2) points that establish a horiz diameter of one circle. press x when done")
-keyPress= cvWindow('Cropped Image', subImg, True)
+if automatic:
+    smoothedIMG = cv2.medianBlur(subImg,3)
+    circlesD = cv2.HoughCircles(smoothedIMG,
+                                cv2.HOUGH_GRADIENT,1,
+                                minDist = 80,
+                                param1 = 15,
+                                param2 = 21,
+                                minRadius = 28,
+                                maxRadius = 32)
+    circlesX = np.uint(np.around(circlesD))
+    circleLocs = circlesX[0]
+    
+    verImg = cv2.cvtColor(subImg.copy(), cv2.COLOR_GRAY2RGB)
+    
+    idealStdImg = np.zeros(subImg.shape, dtype=np.uint8)
+    circlePixels = circlePixelID(circleLocs)
+    for eachPixel in circlePixels:
+        idealStdImg[eachPixel[1], eachPixel[0]] = 100
+        
+    for eachCircle in circleLocs:
+        cv2.circle(verImg,
+                   (eachCircle[0], eachCircle[1]),
+                   eachCircle[2]+4,
+                   (30,30,255),
+                   3)
+        cv2.circle(verImg,
+                   (eachCircle[0], eachCircle[1]),
+                   2,
+                   (30,30,255),
+                   2)
+        cv2.circle(idealStdImg,
+                   (eachCircle[0], eachCircle[1]),
+                   eachCircle[2],
+                   255,
+                   3)
+               
+    cvWindow("verif image", verImg, False)
+    cvWindow("pattern generated", idealStdImg, False)
+                   
+else:
+    print("click centers of circles, then click (2) points that establish a horiz diameter of one circle. press x when done")
+    keyPress= cvWindow('Cropped Image', subImg, True)
 
-diam1 = arrayCoords.pop()
-diam2 = arrayCoords.pop()
-fullDiam = abs(diam1[0]-diam2[0])
-circleLocs = []
-for each in range(numSpots):
-    coords = arrayCoords.pop()
-    circleLocs.append([coords[0],
-                       coords[1],
-                       round(fullDiam/2)])
+    diam1 = arrayCoords.pop()
+    diam2 = arrayCoords.pop()
+    fullDiam = abs(diam1[0]-diam2[0])
+    circleLocs = []
+    for each in range(numSpots):
+        coords = arrayCoords.pop()
+        circleLocs.append([coords[0],
+                           coords[1],
+                           round(fullDiam/2)])
 
-# Generates the ideal std image from the cropped array image
-idealStdImg = np.zeros(subImg.shape, dtype=np.uint8)
-circlePixels = circlePixelID(circleLocs)
-for eachPixel in circlePixels:
-    #print(eachPixel)
-    idealStdImg[eachPixel[1], eachPixel[0]] = 50
+    # Generates the ideal std image from the cropped array image
+    idealStdImg = np.zeros(subImg.shape, dtype=np.uint8)
+    circlePixels = circlePixelID(circleLocs)
+    for eachPixel in circlePixels:
+        idealStdImg[eachPixel[1], eachPixel[0]] = 50
+    cvWindow("testIdeal", idealStdImg, False)
 
-# maybe add in "Coffee ring" feature in the standard...
-# need to figure out the best way to find dim spots
-
-cvWindow("testIdeal", idealStdImg, False)
-
-imageOutName = "standard_leptin_1-lowc.tiff"
+imageOutName = "standard_leptin_1-coffee-ring.tiff"
 cv2.imwrite(imageOutName, idealStdImg)
 encoded_stdImg = encodeImage(idealStdImg)
 
-client = MongoClient()
-db = client.test_database
-
 stdSpotDict = {"batch" : "leptin-1",
-               "spot_info": circleLocs,
-               "image": encoded_stdImg}
-db.patterns.insert_one(stdSpotDict)
+               "spot_info": circleLocs.tolist(),
+               #"image": encoded_stdImg,
+               "shape": [idealStdImg.shape[0],idealStdImg.shape[1]]}
 
-#jsonFileOutName = "standard_leptin_1-lowc.json"
-#out_file = open(jsonFileOutName, "w")
-#json.dump(stdSpotDict, out_file)
-#out_file.close()
+#client = MongoClient()
+#db = client.test_database
+#db.patterns.insert_one(stdSpotDict)
+
+jsonFileOutName = "standard_leptin_1-coffee-ring.json"
+out_file = open(jsonFileOutName, "w")
+json.dump(stdSpotDict, out_file)
+out_file.close()
 
 
 
