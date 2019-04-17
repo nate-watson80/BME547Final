@@ -33,7 +33,7 @@ class Ui_MainWindow(object):
         self.serverResponse = QtWidgets.QLabel(self.centralwidget)
         self.serverResponse.setObjectName("serverResponse")
         self.serverResponse.setAlignment(QtCore.Qt.AlignCenter)
-        self.serverResponse.setMaximumHeight(20)
+        self.serverResponse.setMaximumHeight(45)
         self.verticalLayout.addWidget(self.serverResponse)
         
         self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
