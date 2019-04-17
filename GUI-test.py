@@ -94,7 +94,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.plot_ax.imshow(image_rgb, interpolation='nearest')
         self.plot_ax.axis('off')
         self.plot_ax.figure.canvas.draw()
-        self.serverResponse.setText(QtWidgets.QApplication.translate("", "results: " + str(response.json()['intensities']), None, -1))
+        self.serverResponse.setText(QtWidgets.QApplication.translate("", "results: " + str(response.json()['intensities']) + "\n" + 
+                                                                                           " background: " + str(response.json()['background']), None, -1))
         
     def testServer(self):
         URL = "http://127.0.0.1:5000/"

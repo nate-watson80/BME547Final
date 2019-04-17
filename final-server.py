@@ -14,6 +14,7 @@ from matplotlib import pyplot as plt
 import matplotlib.image as mpimg
 from pymongo import MongoClient
 from datetime import datetime
+from scipy import ndimage
 
 
 
@@ -45,13 +46,13 @@ def pullAllData():
 @app.route("/imageUpload", methods=['POST'])
 def imageUpload():
     in_data = request.get_json()
-    pattern = get_pattern(in_data)
-    if not pattern:
+    patternDict = get_patternDict(in_data)
+    if not patternDict:
         return jsonify({"error": "Batch not recognized contact distributor."}), 400
     servCode, errMsg = validate_image(in_data)
     if errMsg:
         return jsonify({"error": errMsg}), servCode
-    matched_data = patternMatching(in_data['image'], pattern)
+    matched_data = patternMatching(in_data['image'], patternDict)
     binary_d4OrigImage = base64.b64decode(in_data['image'])
     orig_img_id = db.d4OrigImg.insert_one({"image": binary_d4OrigImage}).inserted_id
     matched_img_id = db.d4MatchedImg.insert_one({"image": matched_data['ver_Img']}).inserted_id
@@ -59,6 +60,7 @@ def imageUpload():
         "user": in_data["user"],
         "timestamp": datetime.utcnow(),
         "spots": matched_data["intensities"],
+        "background": matched_data["background"],
         "batch": in_data["batch"],
         "img_grp": in_data["img_grp"],
         "orig_image": orig_img_id,
@@ -69,7 +71,7 @@ def imageUpload():
     return jsonify(matched_data), 200
 
 
-def get_pattern(data):
+def get_patternDict(data):
     batch = data['batch']
     return db.patterns.find_one({"batch": batch})
 
@@ -109,43 +111,85 @@ def encodeImage(np_img_array):
     return str_img_buffer_enc64
 
 
-def patternMatching(encoded_image, pattern):
-    rawImg16b = decodeImage(encoded_image)
-    standard_pattern = decodeImage(pattern["image"])
-    rows = 2064
-    cols = 3088
-    img8b = cv2.normalize(rawImg16b.copy(),
-                          np.zeros(shape=(rows,cols)),
-                          0,255,
-                          norm_type = cv2.NORM_MINMAX,
-                          dtype = cv2.CV_8U)
-    verImg = cv2.cvtColor(img8b.copy(),
-                          cv2.COLOR_GRAY2RGB)
+def generatePatternMasks(spot_info, shape):
+    """generate pattern from json encoded circle locations
+    and generate masks for spots and bgMask
+    """
+    pattern = np.zeros(shape, dtype = np.uint8)
+    spotsMask = pattern.copy()
+    bgMask = 255 * np.ones(shape, dtype = np.uint8)
+    for eachCircle in spot_info:
+        circlePixels = circlePixelID(eachCircle)
+        for eachPixel in circlePixels:
+            pattern[eachPixel[1], eachPixel[0]] = 50
+            spotsMask[eachPixel[1], eachPixel[0]] = 255
+            bgMask[eachPixel[1], eachPixel[0]] = 0
+        cv2.circle(pattern,
+                   (eachCircle[0], eachCircle[1]),
+                   eachCircle[2],
+                   100,
+                   3)
+    return pattern, spotsMask, bgMask
+
+
+def templateMatch8b(image, pattern):
     
-    stdWidth, stdHeight = standard_pattern.shape[::-1]
-
-    #pattern match
-    res = cv2.matchTemplate(img8b,
-                    standard_pattern,
-                    cv2.TM_CCORR_NORMED)
-    gausRows = res.shape[1]
-    gausCols = res.shape[0]
-    #generate gaussian weight
-    x, y = np.meshgrid(range(gausRows), range(gausCols))
-    centerRow = (gausRows/2) + 50
-    centerCol = (gausRows/2) - 700
-    sigma = 300
-    gausCenterWeight = np.exp(-( (x-centerRow)**2 + (y-centerCol)**2)/ (2.0 * sigma**2))
-    gausCenterWeight = np.array(gausCenterWeight)
+    imageCols, imageRows = image.shape[::-1]
+    stdCols, stdRows = pattern.shape[::-1]
+    print("pattern std shape: " + str(pattern.shape[::-1]))
+    # grab dimensions of input image and convert to 8bit for manipulation
+    image8b = cv2.normalize(image.copy(),
+                            np.zeros(shape=(imageRows, imageCols)),
+                            0,255,
+                            norm_type = cv2.NORM_MINMAX,
+                            dtype = cv2.CV_8U)
+    verImg = cv2.cvtColor(image8b.copy(), cv2.COLOR_GRAY2RGB)
+    
+    res = cv2.matchTemplate(image8b, pattern, cv2.TM_CCORR_NORMED)
+    _, _, _, max_loc = cv2.minMaxLoc(res)
+    gausCols, gausRows = res.shape[::-1]
+    print("max location REAL: " + str(max_loc))
+    print("gaus img shape: " + str(res.shape[::-1]))
+    
+    x, y = np.meshgrid(range(gausCols), range(gausRows))
+    centerRow = int((imageRows - stdRows)/2) - 200
+    centerCol = int((imageCols - stdCols)/2)
+    print("center row and col" + " " + str(centerRow) + " " + str(centerCol))
+    #draws circle where the gaussian is centered.
+    cv2.circle(verImg, (centerCol, centerRow), 3, (0, 0, 255), 3)
+    sigma = 400 # inverse slope-- smaller = sharper peak, larger = dull peak
+    gausCenterWeight = np.exp(-( (x-centerCol)**2 + (y-centerRow)**2)/ (2.0 * sigma**2))
+    _, _, _, testCenter = cv2.minMaxLoc(gausCenterWeight)
+    print("gaussian center: " + str(testCenter))
     weightedRes = res * gausCenterWeight
-    _, max_val, _, max_loc = cv2.minMaxLoc(weightedRes)
-    bottomRightPt = (max_loc[0] + stdWidth,
-                     max_loc[1] + stdHeight)
-    cv2.rectangle(verImg, max_loc, bottomRightPt, (0, 105, 255), 15)    
-    circleLocs = pattern["spot_info"]
+    _, _ , _, max_loc = cv2.minMaxLoc(weightedRes)
+    print(max_loc) # max loc is reported as written as column,row... 
+    bottomRightPt = (max_loc[0] + stdCols,
+                     max_loc[1] + stdRows)
+    # cv2.rectangle takes in positions as (column, row)....
+    cv2.rectangle(verImg,
+                  max_loc,
+                  bottomRightPt,
+                  (0, 105, 255),
+                  15)
+    #cvWindow("rectangle drawn", verImg, False)
+    topLeftMatch = max_loc # col, row
+    return topLeftMatch, verImg
 
 
-    circleBrightnesses = []
+def patternMatching(encoded_image, patternDict):
+    rawImg16b = decodeImage(encoded_image)
+    pattern, spotMask, bgMask = generatePatternMasks(patternDict['spot_info'],
+                                                     patternDict['shape'])
+    
+    max_loc, verImg = templateMatch8b(rawImg16b, pattern)
+    stdCols, stdRows = pattern.shape[::-1]
+    
+    circleLocs = patternDict['spot_info']
+
+    subImage = rawImg16b [max_loc[1]:max_loc[1] + stdRows,
+                          max_loc[0]:max_loc[0] + stdCols].copy()
+
     for eachCircle in circleLocs:
         eachCircle[0] = eachCircle[0] + max_loc[0]
         eachCircle[1] = eachCircle[1] + max_loc[1]
@@ -159,20 +203,21 @@ def patternMatching(encoded_image, pattern):
                    2,
                    (30,30,255),
                    2)
-        pixelBrightnesses = []
-        circlePixelLocs = circlePixelID(eachCircle)
-        for eachPixel in circlePixelLocs:
-            pixelBrightnesses.append(rawImg16b[eachPixel[1], eachPixel[0]])
-        avgIntensity = round(np.array(pixelBrightnesses).mean(),4)
-        circleBrightnesses.append(avgIntensity)
-##    circleBrightnesses.append([max_loc])
-##    circleBrightnesses.append([centerRow, centerCol])
+    label_im, nb_labels = ndimage.label(spotMask)
+    spot_vals = ndimage.measurements.mean(subImage, label_im, range(1, nb_labels+1))
+    mean_vals = ndimage.measurements.mean(subImage, label_im)
+    print(spot_vals)
+    print(mean_vals)
+    label_bg, bg_labels = ndimage.label(bgMask)
+    mean_bg = ndimage.measurements.mean(subImage, label_bg)
+    print(mean_bg)
 
     verImg = cv2.pyrDown(verImg) # downsizes
     cv2.imwrite("verification-img.tiff", verImg)
     verImgStr = encodeImage(verImg)
     payload = {"ver_Img" : verImgStr,
-               "intensities" : circleBrightnesses}
+               "intensities" : spot_vals.tolist(),
+               "background" : mean_bg}
     return payload
 
 
