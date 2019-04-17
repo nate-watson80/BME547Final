@@ -11,6 +11,7 @@ from operator import itemgetter
 import numpy as np
 import matplotlib.pyplot as plt
 import json
+from scipy import ndimage
 
 
 arrayCoords = []
@@ -78,41 +79,63 @@ def cvWindow(nameOfWindow, imageToShow, keypressBool):
     if keypressBool:
         return pressedKey
 
-
-def patternMatching(image, standardJsonData):
-    
-    pattern = np.zeros(standardJsonData['shape'], dtype=np.uint8)
-    stdCircles = standardJsonData['spot_info']
-    for eachCircle in stdCircles:
+def generatePatternMasks(spot_info, shape):
+    """generate pattern from json encoded circle locations
+    and generate masks for spots and bgMask
+    """
+    pattern = np.zeros(shape, dtype = np.uint8)
+    spotsMask = pattern.copy()
+    bgMask = 255 * np.ones(shape, dtype = np.uint8)
+    for eachCircle in spot_info:
         circlePixels = circlePixelID(eachCircle)
         for eachPixel in circlePixels:
             pattern[eachPixel[1], eachPixel[0]] = 50
-        cv2.circle(pattern ,
+            spotsMask[eachPixel[1], eachPixel[0]] = 255
+            bgMask[eachPixel[1], eachPixel[0]] = 0
+        cv2.circle(pattern,
                    (eachCircle[0], eachCircle[1]),
                    eachCircle[2],
                    100,
                    3)
+    return pattern, spotsMask, bgMask
 
-    # cvWindow("pattern maker test", pattern, False)
-    
-    # pattern is usually a dict with the pattern and the spot info in it too
-    # image is encoded in the actual server code,
+def templateMatch8b(image, pattern):
     
     imageCols, imageRows = image.shape[::-1]
+    stdCols, stdRows = pattern.shape[::-1]
+    # grab dimensions of input image and convert to 8bit for manipulation
     image8b = cv2.normalize(image.copy(),
                             np.zeros(shape=(imageRows, imageCols)),
                             0,255,
                             norm_type = cv2.NORM_MINMAX,
                             dtype = cv2.CV_8U)
-    verImg = cv2.cvtColor(image8b.copy(), cv2.COLOR_GRAY2RGB)
+    
+    res = cv2.matchTemplate(image, pattern, cv2.TM_CCORR_NORMED)
+    _, _, _, max_loc = cv2.minMaxLoc(res)
+    print("max location REAL: " + str(max_loc))
+    print("gaus img shape: " + str(res.shape[::-1]))
+    x, y = np.meshgrid(range(gausCols), range(gausRows))
+    centerRow = int((imageRows - stdRows)/2) - 200
+    centerCol = int((imageCols - stdCols)/2)
+    
+def patternMatching(image, standardJsonData):
 
+    # generate pattern from json encoded circle locations
+    # and generate masks for spots and bgMask
+    pattern, spotMask, bgMask = generatePatternMasks(standardJsonData['spot_info'],
+                                                     standardJsonData['shape'])
+
+    # generate verification image
+    verImg = cv2.cvtColor(image8b.copy(), cv2.COLOR_GRAY2RGB)
     stdCols, stdRows = pattern.shape[::-1]
+    
     print("pattern std shape: " + str(pattern.shape[::-1]))
     # pattern match
     res = cv2.matchTemplate(image8b,
                             pattern,
                             cv2.TM_CCORR_NORMED)
     gausCols, gausRows = res.shape[::-1]
+    
     _, max_val, _, max_loc = cv2.minMaxLoc(res)
     print("max location REAL: " + str(max_loc))
     print("gaus img shape: " + str(res.shape[::-1]))
@@ -129,7 +152,7 @@ def patternMatching(image, standardJsonData):
     print("gaussian center: " + str(testCenter))
     weightedRes = res * gausCenterWeight
     _, _ , _, max_loc = cv2.minMaxLoc(weightedRes)
-    print(max_loc) # max loc is reported as written as row, column... 
+    print(max_loc) # max loc is reported as written as column,row... 
     bottomRightPt = (max_loc[0] + stdCols,
                      max_loc[1] + stdRows)
     # cv2.rectangle takes in positions as (column, row)....
@@ -142,13 +165,18 @@ def patternMatching(image, standardJsonData):
     #put this back in with the finalserver code
     # circleLocs = pattern["spot_info"]
 
-    #delete this when in final server
+    # modify this when in final server
     circleLocs = standardJsonData["spot_info"]
 
-    
+
+    # crop original image to just pattern matched area
+    subImage = image[max_loc[1]:max_loc[1] + stdRows,
+                     max_loc[0]:max_loc[0] + stdCols].copy()
+    print(subImage.shape)
+    #cvWindow("cropped rect angle", subImage, False)
     # just find all pixels within the circles and save brightnesses
     circleBrightnesses = []
-    circlePixels = []
+            
     for eachCircle in circleLocs:
         print(eachCircle)
         eachCircle[0] = eachCircle[0] + max_loc[0]
@@ -170,25 +198,30 @@ def patternMatching(image, standardJsonData):
         circlePixelLocs = circlePixelID(eachCircle)
         for eachPixel in circlePixelLocs:
             pixelBrightnesses.append(image[eachPixel[1], eachPixel[0]])
-            circlePixels.append([eachPixel[1], eachPixel[0]])
         avgIntensity = round(np.array(pixelBrightnesses).mean(),4)
         circleBrightnesses.append(avgIntensity)
-        
+    label_im, nb_labels = ndimage.label(spotMask)
+    print(nb_labels)
+    mean_vals = ndimage.measurements.mean(subImage, label_im)
+    print(mean_vals)
+    label_bg, bg_labels = ndimage.label(bgMask)
+    print(nb_labels)
+    mean_bg = ndimage.measurements.mean(subImage, label_bg)
+    print(mean_bg)
 ##    backgroundBrightness = []
-##    for eachRow in range(max_loc[1], max_loc[1] + stdRows):
-##        for eachCol in range(max_loc[0], max_loc[0] + stdCols):
-##            if [eachRow, eachCol] not in circlePixels:
-##                backgroundBrightness.append([eachRow, eachCol])
-    print(str(circleBrightnesses))
+##    for eachPixel in backgroundPixels:
+##        backgroundBrightness.append(image[eachPixel])
+    print("circle brightnesses: " + str(circleBrightnesses))
+    print("mean brightness: " + str(round(np.array(circleBrightnesses).mean(),4)))
 ##    avgBackground = round(np.array(backgroundBrightness).mean(),4)
-##    print(avgBackground)
+##    print("background brightness: " + str(avgBackground))
     cvWindow("outputcirclesdrawn", verImg, False)
 
 # read image to be analyzed
 # -1 is as is, 0 is grayscale 8b, 1 is color
 # reported with 2064 rows and 3088 cols
 # rawImg.shape = (2064, 3088)
-rawImg = cv2.imread('slide1_13.tiff', -1) 
+rawImg = cv2.imread('slide1_4.tiff', -1) 
 
 # read json
 inFile = open('standard_leptin_1-coffee-ring.json', "r")
@@ -196,43 +229,6 @@ standardJsonData = json.load(inFile)
 inFile.close()
 
 patternMatching(rawImg, standardJsonData)
-
-###pattern match
-##res = cv2.matchTemplate(rawImg,
-##                        standard_pattern,
-##                        cv2.TM_CCORR_NORMED)
-##_, max_val, _, max_loc = cv2.minMaxLoc(res)
-##
-###verify that the pattern was found
-##
-##bottomRightPt = (max_loc[0] + stdWidth,
-##                 max_loc[1] + stdHeight)
-##verImg = cv2.cvtColor(rawImg.copy(), cv2.COLOR_GRAY2RGB)
-##cv2.rectangle(verImg, max_loc, bottomRightPt, (0, 105, 255), 2)
-### cvWindow("verification", verImg, False)
-##
-### draw in the circles defined by the dict of the circle locs
-##filename = "standard_leptin_1-lowc.json"
-##in_file = open(filename, "r")
-##circleLocs_dict = json.load(in_file)
-##in_file.close()
-##
-##circleLocs = circleLocs_dict["spot info"]
-##
-##for eachCircle in circleLocs:
-##    cv2.circle(verImg,
-##               (max_loc[0] + eachCircle[0],
-##                max_loc[1] + eachCircle[1]),
-##               eachCircle[2]+4,
-##               (30,30,255),
-##               3)
-##    cv2.circle(verImg,
-##               (max_loc[0] + eachCircle[0],
-##                max_loc[1] + eachCircle[1]),
-##               2,
-##               (30,30,255),
-##               2)
-##cvWindow("verification", verImg, False)
 
 
 
