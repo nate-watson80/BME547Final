@@ -180,7 +180,9 @@ def encodeImage(np_img_array):
     """ Encodes the np.array image matrix into a base 64 encoded string
 
     Args:
-
+        np_img_array (np.array): just an image array
+    Returns:
+        str_img_buffer_enc64 (string): base 64 encoded image string
     """
     _, img_buffer = cv2.imencode(".tiff", np_img_array)
     img_buffer_enc64 = base64.b64encode(img_buffer)
@@ -190,7 +192,18 @@ def encodeImage(np_img_array):
 
 def generatePatternMasks(spot_info, shape):
     """generate pattern from json encoded circle locations
-    and generate masks for spots and bgMask
+    and generate masks for spots and bgMask. This is important for efficient
+    quantification of brightness in the spots and background within the image
+    
+    Args:
+        spot_info (list): encoded circle coordinates within the pattern
+        shape (list): encoded shape of the pattern, circles are relative to 
+                    this
+    Returns:
+        pattern (np array): the pattern to be found within the image
+        spotsMask (np array): the masks for the spots within the image
+        bgMask (np array): the masks for the background wihin the image
+        
     """
     pattern = np.zeros(shape, dtype = np.uint8)
     spotsMask = pattern.copy()
@@ -213,8 +226,16 @@ def templateMatch8b(image, pattern):
     """ The core template matching algorithm. calculates the correlation
     between the pattern and the image at all points in 2d sliding window format
     weighs the correlations higher in the center of the image where the spots
-    should be.
-
+    should be. 
+    
+    Args:
+        image (np array): the image to be processed
+        pattern (np array): the pattern to be found in the image (circles)
+    Returns:
+        topLeftMatch (list): location of the best fit defined as the top left
+                            coordinate within the image
+        verImg (np array): copy of the image in color with a rectangle drawn
+                            where the pattern was best fit
     """
     imageCols, imageRows = image.shape[::-1]
     stdCols, stdRows = pattern.shape[::-1]
@@ -260,6 +281,21 @@ def templateMatch8b(image, pattern):
 
 
 def patternMatching(encoded_image, patternDict):
+    """ takes the input image to be processed and the pattern, and finds the
+    circles, draws circles on a copy of the original image- on a verification
+    image. Then, this program quantifies the brightness of the spot features
+    and the background intensity within the pattern (not-spot areas). Spits out
+    a downsized verification image (because it doesn't need to be 16 bit or as
+    large as the original image to show that circles were found).
+    
+    Args:
+        encoded_image (str): base64 encoded image to be processed
+        patternDict (dictionary): dictionary with encoded pattern
+    Returns:
+        payload (dictionary): contains verification image and the brightnesses
+                                of the spots and of the background
+    
+    """
     rawImg16b = decodeImage(encoded_image)
     pattern, spotMask, bgMask = generatePatternMasks(patternDict['spot_info'],
                                                      patternDict['shape'])
@@ -304,6 +340,13 @@ def patternMatching(encoded_image, patternDict):
 
 
 def validate_image(in_data):
+    """ validates the input data to make sure it's formatted as expected
+    
+    Args:
+        in_data (dictionary): the request.json in_Data from the client
+    Returns:
+        errorCode, errorStatement (int, Str): server error code and message
+    """
     return 200, None
 
 if __name__ == '__main__':
