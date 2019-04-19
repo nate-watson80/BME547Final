@@ -29,22 +29,31 @@ db = client.Detector_Software
 
 @app.route("/", methods=['GET'])
 def server_on():
-    """Basic Check to see that the server is up!
+    """Basic Check to see that the server is up
+
+    Returns the server status.
+
+    Args:
+        None
+
+    Returns:
+        Server status
     """
-    return "The server is up! Should be ready to rock and roll"
+    return "The server is up! Should be ready to rock and roll", 200
 
 
 @app.route("/pullAllData", methods=['GET'])
 def pullAllData():
-    """sends all analyzed data back in a json with fileNames and list of list 
-    of all "spots" intensities and backgrounds. 
-    
+    """sends all analyzed data back in a json with fileNames and list of list
+    of all "spots" intensities and backgrounds.
+
     Args:
         db.d4Images (Mongo db collection): Mongo DB collection with processed
         data
+
     Returns:
         payload (jsonify(dict)): Processed data return
-    
+
     """
 
     pullFileNames = []
@@ -63,15 +72,16 @@ def pullAllData():
 @app.route("/imageUpload", methods=['POST'])
 def imageUpload():
     """ The core function of the server, takes in a base64 encoded image
-    and other associated data with it (which pattern to match to the image, 
+    and other associated data with it (which pattern to match to the image,
     the client where the call originates from). then, it finds the pattern
     within the mongo db (it's generated from pattern-generator.py script first)
-    Then, the patternMatching function is run, with the original image and the 
+    Then, the patternMatching function is run, with the original image and the
     pattern. That function returns the processed data, which is shoved into
-    the MongoDB and returned to the user. 
-    
+    the MongoDB and returned to the user.
+
     Args:
         in_data (json/dictionary): b64 encoded image, batch/pattern name, more
+
     Returns:
         matchedData, errorCode (string): processed image, data, and more
     """
@@ -104,11 +114,12 @@ def imageUpload():
 def get_patternDict(data):
     """ finds the pattern from the batch name input from the client from the
         MongoDB. Then returns the encoded pattern!
-    
+
     Args:
         data (dictionary): the data dictionary that contains the 'batch' key
+
     Returns:
-        batch data (dictionary): the query result from the mongodb 
+        batch data (dictionary): the query result from the mongodb
     """
     batch = data['batch']
     return db.patterns.find_one({"batch": batch})
@@ -117,19 +128,19 @@ def get_patternDict(data):
 def circlePixelID(circleData):
     """ takes one circle location and radius and calculates all pixel coords
     within the radii from that center location
-    
+
     Args:
         circleData (list): [row, col, radius]
     Returns:
         pixelLocations (list): list of all pixel locations within a circle
     """
     pixelLocations = []
-    xCoordCirc = circleData[0] # separates the x and y coordinates of the center of the circles and the circle radius 
+    xCoordCirc = circleData[0] # separates the x and y coordinates of the center of the circles and the circle radius
     yCoordCirc = circleData[1]
     radiusCirc = circleData[2]
     for exesInCircle in range(( xCoordCirc - radiusCirc ),( xCoordCirc + radiusCirc )):
-        whyRange = np.sqrt(pow(radiusCirc,2) - pow((exesInCircle - xCoordCirc),2)) #calculates the y-coordinates that define the top and bottom bounds of a slice (at x position) of the circle 
-        discreteWhyRange = int(whyRange) 
+        whyRange = np.sqrt(pow(radiusCirc,2) - pow((exesInCircle - xCoordCirc),2)) #calculates the y-coordinates that define the top and bottom bounds of a slice (at x position) of the circle
+        discreteWhyRange = int(whyRange)
         for whysInCircle in range(( yCoordCirc - discreteWhyRange),( yCoordCirc + discreteWhyRange)):
             pixelLocations.append([exesInCircle,whysInCircle])
     return pixelLocations
@@ -138,9 +149,10 @@ def circlePixelID(circleData):
 def decodeImage(str_encoded_img, color = False):
     """ Takes an base 64 encoded image and converts it to a image array. Has
     the option to conserve the original color or just as a greyscale.
-    
+
     Args:
         str_encoded_img (str): base 64 encoded image
+
     Returns:
         orig_img (np.array): numpy array image matrix
     """
@@ -159,10 +171,10 @@ def decodeImage(str_encoded_img, color = False):
 
 
 def encodeImage(np_img_array):
-    """ Encodes the np.array image matrix into a base 64 encoded string 
-    
+    """ Encodes the np.array image matrix into a base 64 encoded string
+
     Args:
-        
+
     """
     _, img_buffer = cv2.imencode(".tiff", np_img_array)
     img_buffer_enc64 = base64.b64encode(img_buffer)
@@ -192,11 +204,11 @@ def generatePatternMasks(spot_info, shape):
 
 
 def templateMatch8b(image, pattern):
-    """ The core template matching algorithm. calculates the correlation 
+    """ The core template matching algorithm. calculates the correlation
     between the pattern and the image at all points in 2d sliding window format
     weighs the correlations higher in the center of the image where the spots
-    should be. 
-    
+    should be.
+
     """
     imageCols, imageRows = image.shape[::-1]
     stdCols, stdRows = pattern.shape[::-1]
@@ -208,13 +220,13 @@ def templateMatch8b(image, pattern):
                             norm_type = cv2.NORM_MINMAX,
                             dtype = cv2.CV_8U)
     verImg = cv2.cvtColor(image8b.copy(), cv2.COLOR_GRAY2RGB)
-    
+
     res = cv2.matchTemplate(image8b, pattern, cv2.TM_CCORR_NORMED)
     _, _, _, max_loc = cv2.minMaxLoc(res)
     gausCols, gausRows = res.shape[::-1]
     print("max location REAL: " + str(max_loc))
     print("gaus img shape: " + str(res.shape[::-1]))
-    
+
     x, y = np.meshgrid(range(gausCols), range(gausRows))
     centerRow = int((imageRows - stdRows)/2) - 200
     centerCol = int((imageCols - stdCols)/2)
@@ -227,7 +239,7 @@ def templateMatch8b(image, pattern):
     print("gaussian center: " + str(testCenter))
     weightedRes = res * gausCenterWeight
     _, _ , _, max_loc = cv2.minMaxLoc(weightedRes)
-    print(max_loc) # max loc is reported as written as column,row... 
+    print(max_loc) # max loc is reported as written as column,row...
     bottomRightPt = (max_loc[0] + stdCols,
                      max_loc[1] + stdRows)
     # cv2.rectangle takes in positions as (column, row)....
@@ -245,10 +257,10 @@ def patternMatching(encoded_image, patternDict):
     rawImg16b = decodeImage(encoded_image)
     pattern, spotMask, bgMask = generatePatternMasks(patternDict['spot_info'],
                                                      patternDict['shape'])
-    
+
     max_loc, verImg = templateMatch8b(rawImg16b, pattern)
     stdCols, stdRows = pattern.shape[::-1]
-    
+
     circleLocs = patternDict['spot_info']
 
     subImage = rawImg16b [max_loc[1]:max_loc[1] + stdRows,
