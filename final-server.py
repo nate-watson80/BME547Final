@@ -16,6 +16,7 @@ from pymongo import MongoClient
 
 from datetime import datetime
 from scipy import ndimage
+import logging
 
 
 # Initialize the Flask and Mongo client-- this is set for a local Mongo DB
@@ -301,4 +302,5 @@ def validate_image(in_data):
     return 200, None
 
 if __name__ == '__main__':
+    logging.basicConfig(filename='logfile.log', level=logging.INFO)
     app.run()
