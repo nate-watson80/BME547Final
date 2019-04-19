@@ -67,6 +67,7 @@ def pullAllData():
     payload = {"filename": pullFileNames,
                "spots": pullSpotData,
                "background": pullBgData}
+    logging.info("Sending back analyzed data for file" + pullFileNames)
     return jsonify(payload), 200
 
 
@@ -302,5 +303,5 @@ def validate_image(in_data):
     return 200, None
 
 if __name__ == '__main__':
-    logging.basicConfig(filename='logfile.log', level=logging.INFO)
+    logging.basicConfig(filename="logfile.log", level=logging.INFO)
     app.run()
