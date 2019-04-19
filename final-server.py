@@ -89,6 +89,15 @@ def imageUpload():
 
 
 def get_patternDict(data):
+    """Gets the pattern dictionary from the input image data
+
+    Args:
+        data (dict): dictionary of image information
+
+    Returns:
+        Pattern dictionary
+
+    """
     batch = data['batch']
     return db.patterns.find_one({"batch": batch})
 
