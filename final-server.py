@@ -22,6 +22,7 @@ app = Flask(__name__)
 client = MongoClient()
 db = client.test_database
 
+
 @app.route("/", methods=['GET'])
 def server_on():
     """Basic Check to see that the server is up
@@ -38,7 +39,7 @@ def server_on():
 
 @app.route("/pullAllData", methods=['GET'])
 def pullAllData():
-    """
+    """Creates JSON with filenames and data
 
     Sends all analyzed data back in a json with fileNames and list of list of
     all "spots" intensities
@@ -239,6 +240,7 @@ def patternMatching(encoded_image, patternDict):
 
 def validate_image(in_data):
     return 200, None
+
 
 if __name__ == '__main__':
     app.run()
