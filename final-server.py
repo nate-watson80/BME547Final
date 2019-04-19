@@ -117,7 +117,7 @@ def imageUpload():
     }
     img_id = db.d4Images.insert_one(data)
     client_name = in_data["client"]
-    action = 'Image Uploaded'
+    action = "Image Uploaded"
     log_to_DB(data, client_name, action)
     return jsonify(matched_data), 200
 
@@ -125,10 +125,12 @@ def imageUpload():
 def log_to_DB(in_data, client_name, action):
     user = in_data("user")
     timestamp = in_data("timestamp")
+    filename = in_data("filename")
     out_data = {
                 "user": user,
                 "timestamp": timestamp,
                 "client_name": client_name,
+                "filename": fileName,
                 "action": action
                }
     result = db.Logging.insert_one(out_data)
