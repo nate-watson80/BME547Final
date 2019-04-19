@@ -24,8 +24,15 @@ db = client.test_database
 
 @app.route("/", methods=['GET'])
 def server_on():
-    """Basic Check to see that the server is up!
+    """Basic Check to see that the server is up
 
+    Gives status message that server is running
+
+    Args:
+        None
+
+    Returns:
+        None
     """
     return "The server is up! Should be ready to rock and roll"
 
@@ -78,12 +85,12 @@ def get_patternDict(data):
 
 def circlePixelID(circleData): # output pixel locations of all circles within the list,
     pixelLocations = []
-    xCoordCirc = circleData[0] # separates the x and y coordinates of the center of the circles and the circle radius 
+    xCoordCirc = circleData[0] # separates the x and y coordinates of the center of the circles and the circle radius
     yCoordCirc = circleData[1]
     radiusCirc = circleData[2]
     for exesInCircle in range(( xCoordCirc - radiusCirc ),( xCoordCirc + radiusCirc )):
-        whyRange = np.sqrt(pow(radiusCirc,2) - pow((exesInCircle - xCoordCirc),2)) #calculates the y-coordinates that define the top and bottom bounds of a slice (at x position) of the circle 
-        discreteWhyRange = int(whyRange) 
+        whyRange = np.sqrt(pow(radiusCirc,2) - pow((exesInCircle - xCoordCirc),2)) #calculates the y-coordinates that define the top and bottom bounds of a slice (at x position) of the circle
+        discreteWhyRange = int(whyRange)
         for whysInCircle in range(( yCoordCirc - discreteWhyRange),( yCoordCirc + discreteWhyRange)):
             pixelLocations.append([exesInCircle,whysInCircle])
     return pixelLocations
@@ -133,7 +140,7 @@ def generatePatternMasks(spot_info, shape):
 
 
 def templateMatch8b(image, pattern):
-    
+
     imageCols, imageRows = image.shape[::-1]
     stdCols, stdRows = pattern.shape[::-1]
     print("pattern std shape: " + str(pattern.shape[::-1]))
@@ -144,13 +151,13 @@ def templateMatch8b(image, pattern):
                             norm_type = cv2.NORM_MINMAX,
                             dtype = cv2.CV_8U)
     verImg = cv2.cvtColor(image8b.copy(), cv2.COLOR_GRAY2RGB)
-    
+
     res = cv2.matchTemplate(image8b, pattern, cv2.TM_CCORR_NORMED)
     _, _, _, max_loc = cv2.minMaxLoc(res)
     gausCols, gausRows = res.shape[::-1]
     print("max location REAL: " + str(max_loc))
     print("gaus img shape: " + str(res.shape[::-1]))
-    
+
     x, y = np.meshgrid(range(gausCols), range(gausRows))
     centerRow = int((imageRows - stdRows)/2) - 200
     centerCol = int((imageCols - stdCols)/2)
@@ -163,7 +170,7 @@ def templateMatch8b(image, pattern):
     print("gaussian center: " + str(testCenter))
     weightedRes = res * gausCenterWeight
     _, _ , _, max_loc = cv2.minMaxLoc(weightedRes)
-    print(max_loc) # max loc is reported as written as column,row... 
+    print(max_loc) # max loc is reported as written as column,row...
     bottomRightPt = (max_loc[0] + stdCols,
                      max_loc[1] + stdRows)
     # cv2.rectangle takes in positions as (column, row)....
@@ -181,10 +188,10 @@ def patternMatching(encoded_image, patternDict):
     rawImg16b = decodeImage(encoded_image)
     pattern, spotMask, bgMask = generatePatternMasks(patternDict['spot_info'],
                                                      patternDict['shape'])
-    
+
     max_loc, verImg = templateMatch8b(rawImg16b, pattern)
     stdCols, stdRows = pattern.shape[::-1]
-    
+
     circleLocs = patternDict['spot_info']
 
     subImage = rawImg16b [max_loc[1]:max_loc[1] + stdRows,
