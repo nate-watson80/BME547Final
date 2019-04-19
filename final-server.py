@@ -67,7 +67,6 @@ def pullAllData():
     payload = {"filename": pullFileNames,
                "spots": pullSpotData,
                "background": pullBgData}
-    logging.info("Sending back analyzed data for file" + pullFileNames)
     return jsonify(payload), 200
 
 
@@ -92,9 +91,12 @@ def imageUpload():
     in_data = request.get_json()
     patternDict = get_patternDict(in_data)
     if not patternDict:
+        batch = in_data["batch"]
+        logging.error("Batch " + batch + " not recognized contact distributor.")
         return jsonify({"error": "Batch not recognized contact distributor."}), 400
     servCode, errMsg = validate_image(in_data)
     if errMsg:
+        logging.error(errMsg)
         return jsonify({"error": errMsg}), servCode
     matched_data = patternMatching(in_data['image'], patternDict)
     binary_d4OrigImage = base64.b64decode(in_data['image'])
