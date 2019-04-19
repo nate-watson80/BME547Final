@@ -114,7 +114,22 @@ def imageUpload():
         "filename": in_data['filename']
     }
     img_id = db.d4Images.insert_one(data)
+    client_name = in_data["client"]
+    action = 'Image Uploaded'
+    log_to_DB(data, client_name, action)
     return jsonify(matched_data), 200
+
+
+def log_to_DB(in_data, client_name, action):
+    user = in_data("user")
+    timestamp = in_data("timestamp")
+    out_data = {
+                "user": user,
+                "timestamp": timestamp,
+                "client_name": client_name,
+                "action": action
+               }
+    result = db.Logging.insert_one(out_data)
 
 
 def get_patternDict(data):
@@ -194,16 +209,16 @@ def generatePatternMasks(spot_info, shape):
     """generate pattern from json encoded circle locations
     and generate masks for spots and bgMask. This is important for efficient
     quantification of brightness in the spots and background within the image
-    
+
     Args:
         spot_info (list): encoded circle coordinates within the pattern
-        shape (list): encoded shape of the pattern, circles are relative to 
+        shape (list): encoded shape of the pattern, circles are relative to
                     this
     Returns:
         pattern (np array): the pattern to be found within the image
         spotsMask (np array): the masks for the spots within the image
         bgMask (np array): the masks for the background wihin the image
-        
+
     """
     pattern = np.zeros(shape, dtype = np.uint8)
     spotsMask = pattern.copy()
@@ -226,8 +241,8 @@ def templateMatch8b(image, pattern):
     """ The core template matching algorithm. calculates the correlation
     between the pattern and the image at all points in 2d sliding window format
     weighs the correlations higher in the center of the image where the spots
-    should be. 
-    
+    should be.
+
     Args:
         image (np array): the image to be processed
         pattern (np array): the pattern to be found in the image (circles)
@@ -287,14 +302,14 @@ def patternMatching(encoded_image, patternDict):
     and the background intensity within the pattern (not-spot areas). Spits out
     a downsized verification image (because it doesn't need to be 16 bit or as
     large as the original image to show that circles were found).
-    
+
     Args:
         encoded_image (str): base64 encoded image to be processed
         patternDict (dictionary): dictionary with encoded pattern
     Returns:
         payload (dictionary): contains verification image and the brightnesses
                                 of the spots and of the background
-    
+
     """
     rawImg16b = decodeImage(encoded_image)
     pattern, spotMask, bgMask = generatePatternMasks(patternDict['spot_info'],
@@ -341,7 +356,7 @@ def patternMatching(encoded_image, patternDict):
 
 def validate_image(in_data):
     """ validates the input data to make sure it's formatted as expected
-    
+
     Args:
         in_data (dictionary): the request.json in_Data from the client
     Returns:
