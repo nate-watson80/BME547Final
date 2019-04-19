@@ -32,13 +32,22 @@ def server_on():
         None
 
     Returns:
-        None
+        Message stating that the server is up
     """
-    return "The server is up! Should be ready to rock and roll"
+    return "The server is up! Should be ready to rock and roll", 200
 
 @app.route("/pullAllData", methods=['GET'])
 def pullAllData():
-    """sends all analyzed data back in a json with fileNames and list of list of all "spots" intensities
+    """
+
+    Sends all analyzed data back in a json with fileNames and list of list of
+    all "spots" intensities
+
+    Args:
+        None
+
+    Returns:
+        JSON of filenames and data
     """
     storeFileNames = []
     storeSpotData = []
