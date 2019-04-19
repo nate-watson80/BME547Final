@@ -73,9 +73,11 @@ def pullAllData():
 
 @app.route("/imageUpload", methods=['POST'])
 def imageUpload():
-    """ The core function of the server, takes in a base64 encoded image
+    """Uploads and processes an image
+
+    The core function of the server, takes in a base64 encoded image
     and other associated data with it (which pattern to match to the image,
-    the client where the call originates from). then, it finds the pattern
+    the client where the call originates from). Then, it finds the pattern
     within the mongo db (it's generated from pattern-generator.py script first)
     Then, the patternMatching function is run, with the original image and the
     pattern. That function returns the processed data, which is shoved into
