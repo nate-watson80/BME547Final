@@ -13,38 +13,68 @@ import cv2
 from matplotlib import pyplot as plt
 import matplotlib.image as mpimg
 from pymongo import MongoClient
+
 from datetime import datetime
 from scipy import ndimage
 
 
-
+# Initialize the Flask and Mongo client-- this is set for a local Mongo DB
 app = Flask(__name__)
-client = MongoClient()
-db = client.test_database
+
+connString = "mongodb+srv://bme547:.9w-UVfWaMDCsuL"
+connString = connString + "@bme547-rrjis.mongodb.net/test?retryWrites=true"
+client = MongoClient(connString)
+db = client.Detector_Software
+
 
 @app.route("/", methods=['GET'])
 def server_on():
     """Basic Check to see that the server is up!
-
     """
     return "The server is up! Should be ready to rock and roll"
 
+
 @app.route("/pullAllData", methods=['GET'])
 def pullAllData():
-    """sends all analyzed data back in a json with fileNames and list of list of all "spots" intensities
+    """sends all analyzed data back in a json with fileNames and list of list 
+    of all "spots" intensities and backgrounds. 
+    
+    Args:
+        db.d4Images (Mongo db collection): Mongo DB collection with processed
+        data
+    Returns:
+        payload (jsonify(dict)): Processed data return
+    
     """
-    storeFileNames = []
-    storeSpotData = []
+
+    pullFileNames = []
+    pullSpotData = []
+    pullBgData = []
     for eachEntry in db.d4Images.find():
-        storeFileNames.append(eachEntry["filename"])
-        storeSpotData.append(eachEntry["spots"])
-    payload = {"filename": storeFileNames,
-               "spots": storeSpotData}
+        pullFileNames.append(eachEntry["filename"])
+        pullSpotData.append(eachEntry["spots"])
+        pullBgData.append(eachEntry["background"])
+    payload = {"filename": pullFileNames,
+               "spots": pullSpotData,
+               "background": pullBgData}
     return jsonify(payload), 200
 
 
 @app.route("/imageUpload", methods=['POST'])
 def imageUpload():
+    """ The core function of the server, takes in a base64 encoded image
+    and other associated data with it (which pattern to match to the image, 
+    the client where the call originates from). then, it finds the pattern
+    within the mongo db (it's generated from pattern-generator.py script first)
+    Then, the patternMatching function is run, with the original image and the 
+    pattern. That function returns the processed data, which is shoved into
+    the MongoDB and returned to the user. 
+    
+    Args:
+        in_data (json/dictionary): b64 encoded image, batch/pattern name, more
+    Returns:
+        matchedData, errorCode (string): processed image, data, and more
+    """
     in_data = request.get_json()
     patternDict = get_patternDict(in_data)
     if not patternDict:
@@ -72,11 +102,27 @@ def imageUpload():
 
 
 def get_patternDict(data):
+    """ finds the pattern from the batch name input from the client from the
+        MongoDB. Then returns the encoded pattern!
+    
+    Args:
+        data (dictionary): the data dictionary that contains the 'batch' key
+    Returns:
+        batch data (dictionary): the query result from the mongodb 
+    """
     batch = data['batch']
     return db.patterns.find_one({"batch": batch})
 
 
-def circlePixelID(circleData): # output pixel locations of all circles within the list,
+def circlePixelID(circleData):
+    """ takes one circle location and radius and calculates all pixel coords
+    within the radii from that center location
+    
+    Args:
+        circleData (list): [row, col, radius]
+    Returns:
+        pixelLocations (list): list of all pixel locations within a circle
+    """
     pixelLocations = []
     xCoordCirc = circleData[0] # separates the x and y coordinates of the center of the circles and the circle radius 
     yCoordCirc = circleData[1]
@@ -90,6 +136,14 @@ def circlePixelID(circleData): # output pixel locations of all circles within th
 
 
 def decodeImage(str_encoded_img, color = False):
+    """ Takes an base 64 encoded image and converts it to a image array. Has
+    the option to conserve the original color or just as a greyscale.
+    
+    Args:
+        str_encoded_img (str): base 64 encoded image
+    Returns:
+        orig_img (np.array): numpy array image matrix
+    """
     decoded_img = base64.b64decode(str_encoded_img)
     buf_img = io.BytesIO(decoded_img)
     if color:
@@ -105,6 +159,11 @@ def decodeImage(str_encoded_img, color = False):
 
 
 def encodeImage(np_img_array):
+    """ Encodes the np.array image matrix into a base 64 encoded string 
+    
+    Args:
+        
+    """
     _, img_buffer = cv2.imencode(".tiff", np_img_array)
     img_buffer_enc64 = base64.b64encode(img_buffer)
     str_img_buffer_enc64 = str(img_buffer_enc64, encoding='utf-8')
@@ -133,7 +192,12 @@ def generatePatternMasks(spot_info, shape):
 
 
 def templateMatch8b(image, pattern):
+    """ The core template matching algorithm. calculates the correlation 
+    between the pattern and the image at all points in 2d sliding window format
+    weighs the correlations higher in the center of the image where the spots
+    should be. 
     
+    """
     imageCols, imageRows = image.shape[::-1]
     stdCols, stdRows = pattern.shape[::-1]
     print("pattern std shape: " + str(pattern.shape[::-1]))
