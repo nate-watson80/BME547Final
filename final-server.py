@@ -22,10 +22,12 @@ import logging
 # Initialize the Flask and Mongo client-- this is set for a local Mongo DB
 app = Flask(__name__)
 
-connString = "mongodb+srv://bme547:.9w-UVfWaMDCsuL"
-connString = connString + "@bme547-rrjis.mongodb.net/test?retryWrites=true"
-client = MongoClient(connString)
-db = client.Detector_Software
+
+def init_mongoDB():
+    connString = "mongodb+srv://bme547:.9w-UVfWaMDCsuL"
+    connString = connString + "@bme547-rrjis.mongodb.net/test?retryWrites=true"
+    client = MongoClient(connString)
+    db = client.Detector_Software
 
 
 @app.route("/", methods=['GET'])
@@ -366,4 +368,5 @@ def validate_image(in_data):
 
 if __name__ == '__main__':
     logging.basicConfig(filename="logfile.log", level=logging.INFO)
+    init_mongoDB()
     app.run()
