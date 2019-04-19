@@ -162,7 +162,9 @@ def encodeImage(np_img_array):
     """ Encodes the np.array image matrix into a base 64 encoded string 
     
     Args:
-        
+        np_img_array (np.array): just an image array
+    Returns:
+        str_img_buffer_enc64 (string): base 64 encoded image string
     """
     _, img_buffer = cv2.imencode(".tiff", np_img_array)
     img_buffer_enc64 = base64.b64encode(img_buffer)
