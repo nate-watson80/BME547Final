@@ -7,7 +7,8 @@ Created on Thu Apr 11 18:06:02 2019
 
 from flask import Flask, jsonify, request
 import numpy as np
-import os, io
+import os
+import io
 import base64
 import cv2
 from matplotlib import pyplot as plt
@@ -16,11 +17,10 @@ from pymongo import MongoClient
 from datetime import datetime
 from scipy import ndimage
 
-
-
 app = Flask(__name__)
 client = MongoClient()
 db = client.test_database
+
 
 @app.route("/", methods=['GET'])
 def server_on():
@@ -29,10 +29,12 @@ def server_on():
     """
     return "The server is up! Should be ready to rock and roll"
 
+
 @app.route("/pullAllData", methods=['GET'])
 def pullAllData():
-    """sends all analyzed data back in a json with fileNames and list of list of all "spots" intensities
+    """ pullAllData()
     """
+
     storeFileNames = []
     storeSpotData = []
     for eachEntry in db.d4Images.find():
@@ -48,14 +50,20 @@ def imageUpload():
     in_data = request.get_json()
     patternDict = get_patternDict(in_data)
     if not patternDict:
-        return jsonify({"error": "Batch not recognized contact distributor."}), 400
+        error_dict = {"error": "Batch not recognized contact distributor."}
+        return jsonify(error), 400
     servCode, errMsg = validate_image(in_data)
     if errMsg:
         return jsonify({"error": errMsg}), servCode
     matched_data = patternMatching(in_data['image'], patternDict)
     binary_d4OrigImage = base64.b64decode(in_data['image'])
-    orig_img_id = db.d4OrigImg.insert_one({"image": binary_d4OrigImage}).inserted_id
-    matched_img_id = db.d4MatchedImg.insert_one({"image": matched_data['ver_Img']}).inserted_id
+
+    orig_img_id = db.d4OrigImg.insert_one(
+        {"image": binary_d4OrigImage}).inserted_id
+
+    matched_img_id = db.d4MatchedImg.insert_one(
+        {"image": matched_data['ver_Img']}).inserted_id
+
     data = {
         "user": in_data["user"],
         "timestamp": datetime.utcnow(),
@@ -76,20 +84,28 @@ def get_patternDict(data):
     return db.patterns.find_one({"batch": batch})
 
 
-def circlePixelID(circleData): # output pixel locations of all circles within the list,
+def circlePixelID(circleData):
     pixelLocations = []
-    xCoordCirc = circleData[0] # separates the x and y coordinates of the center of the circles and the circle radius
+    # Seperate the x and y coordinates of the center of the circles
+    # along with the circle's radius.
+    yCoordCirc = circleData[1]
+    xCoordCirc = circleData[0]
     yCoordCirc = circleData[1]
     radiusCirc = circleData[2]
-    for exesInCircle in range(( xCoordCirc - radiusCirc ),( xCoordCirc + radiusCirc )):
-        whyRange = np.sqrt(pow(radiusCirc,2) - pow((exesInCircle - xCoordCirc),2)) #calculates the y-coordinates that define the top and bottom bounds of a slice (at x position) of the circle
+    for exesInCircle in range((xCoordCirc - radiusCirc),
+                              (xCoordCirc + radiusCirc)):
+        # Calculates the y-coordinates that define the top and bottom bounds
+        # of a slice (at x position) of the circle
+        whyRange = np.sqrt(
+            pow(radiusCirc, 2) - pow((exesInCircle - xCoordCirc), 2))
         discreteWhyRange = int(whyRange)
-        for whysInCircle in range(( yCoordCirc - discreteWhyRange),( yCoordCirc + discreteWhyRange)):
-            pixelLocations.append([exesInCircle,whysInCircle])
+        for whysInCircle in range((yCoordCirc - discreteWhyRange),
+                                  (yCoordCirc + discreteWhyRange)):
+            pixelLocations.append([exesInCircle, whysInCircle])
     return pixelLocations
 
 
-def decodeImage(str_encoded_img, color = False):
+def decodeImage(str_encoded_img, color=False):
     decoded_img = base64.b64decode(str_encoded_img)
     buf_img = io.BytesIO(decoded_img)
     if color:
@@ -115,9 +131,9 @@ def generatePatternMasks(spot_info, shape):
     """generate pattern from json encoded circle locations
     and generate masks for spots and bgMask
     """
-    pattern = np.zeros(shape, dtype = np.uint8)
+    pattern = np.zeros(shape, dtype=np.uint8)
     spotsMask = pattern.copy()
-    bgMask = 255 * np.ones(shape, dtype = np.uint8)
+    bgMask = 255 * np.ones(shape, dtype=np.uint8)
     for eachCircle in spot_info:
         circlePixels = circlePixelID(eachCircle)
         for eachPixel in circlePixels:
@@ -140,9 +156,9 @@ def templateMatch8b(image, pattern):
     # grab dimensions of input image and convert to 8bit for manipulation
     image8b = cv2.normalize(image.copy(),
                             np.zeros(shape=(imageRows, imageCols)),
-                            0,255,
-                            norm_type = cv2.NORM_MINMAX,
-                            dtype = cv2.CV_8U)
+                            0, 255,
+                            norm_type=cv2.NORM_MINMAX,
+                            dtype=cv2.CV_8U)
     verImg = cv2.cvtColor(image8b.copy(), cv2.COLOR_GRAY2RGB)
 
     res = cv2.matchTemplate(image8b, pattern, cv2.TM_CCORR_NORMED)
@@ -155,15 +171,16 @@ def templateMatch8b(image, pattern):
     centerRow = int((imageRows - stdRows)/2) - 200
     centerCol = int((imageCols - stdCols)/2)
     print("center row and col" + " " + str(centerRow) + " " + str(centerCol))
-    #draws circle where the gaussian is centered.
+    # draws circle where the gaussian is centered.
     cv2.circle(verImg, (centerCol, centerRow), 3, (0, 0, 255), 3)
-    sigma = 400 # inverse slope-- smaller = sharper peak, larger = dull peak
-    gausCenterWeight = np.exp(-( (x-centerCol)**2 + (y-centerRow)**2)/ (2.0 * sigma**2))
+    sigma = 400  # inverse slope-- smaller = sharper peak, larger = dull peak
+    gausCenterWeight = np.exp(-((x-centerCol)**2 + (y-centerRow)**2) /
+                              (2.0 * sigma**2))
     _, _, _, testCenter = cv2.minMaxLoc(gausCenterWeight)
     print("gaussian center: " + str(testCenter))
     weightedRes = res * gausCenterWeight
-    _, _ , _, max_loc = cv2.minMaxLoc(weightedRes)
-    print(max_loc) # max loc is reported as written as column,row...
+    _, _, _, max_loc = cv2.minMaxLoc(weightedRes)
+    print(max_loc)  # max loc is reported as written as column,row...
     bottomRightPt = (max_loc[0] + stdCols,
                      max_loc[1] + stdRows)
     # cv2.rectangle takes in positions as (column, row)....
@@ -172,8 +189,8 @@ def templateMatch8b(image, pattern):
                   bottomRightPt,
                   (0, 105, 255),
                   15)
-    #cvWindow("rectangle drawn", verImg, False)
-    topLeftMatch = max_loc # col, row
+    # cvWindow("rectangle drawn", verImg, False)
+    topLeftMatch = max_loc  # col, row
     return topLeftMatch, verImg
 
 
@@ -187,8 +204,8 @@ def patternMatching(encoded_image, patternDict):
 
     circleLocs = patternDict['spot_info']
 
-    subImage = rawImg16b [max_loc[1]:max_loc[1] + stdRows,
-                          max_loc[0]:max_loc[0] + stdCols].copy()
+    subImage = rawImg16b[max_loc[1]:max_loc[1] + stdRows,
+                         max_loc[0]:max_loc[0] + stdCols].copy()
 
     for eachCircle in circleLocs:
         eachCircle[0] = eachCircle[0] + max_loc[0]
@@ -196,15 +213,16 @@ def patternMatching(encoded_image, patternDict):
         cv2.circle(verImg,
                    (eachCircle[0], eachCircle[1]),
                    eachCircle[2]+4,
-                   (30,30,255),
+                   (30, 30, 255),
                    3)
         cv2.circle(verImg,
                    (eachCircle[0], eachCircle[1]),
                    2,
-                   (30,30,255),
+                   (30, 30, 255),
                    2)
     label_im, nb_labels = ndimage.label(spotMask)
-    spot_vals = ndimage.measurements.mean(subImage, label_im, range(1, nb_labels+1))
+    spot_vals = ndimage.measurements.mean(subImage, label_im,
+                                          range(1, nb_labels+1))
     mean_vals = ndimage.measurements.mean(subImage, label_im)
     print(spot_vals)
     print(mean_vals)
@@ -212,12 +230,12 @@ def patternMatching(encoded_image, patternDict):
     mean_bg = ndimage.measurements.mean(subImage, label_bg)
     print(mean_bg)
 
-    verImg = cv2.pyrDown(verImg) # downsizes
+    verImg = cv2.pyrDown(verImg)  # downsizes
     cv2.imwrite("verification-img.tiff", verImg)
     verImgStr = encodeImage(verImg)
-    payload = {"ver_Img" : verImgStr,
-               "intensities" : spot_vals.tolist(),
-               "background" : mean_bg}
+    payload = {"ver_Img": verImgStr,
+               "intensities": spot_vals.tolist(),
+               "background": mean_bg}
     return payload
 
 
