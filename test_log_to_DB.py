@@ -7,13 +7,12 @@ db = fs.init_mongoDB()
 
 def test_log_to_DB():
     timestamp = datetime.utcnow()
-    in_data = {
-               "user": "testUser",
-               "timestamp": timestamp,
-               "filename": "testFilename"
-              }
-    client_name = "GUI-test"
+    log_data = {
+                "user": "testUser",
+                "client": "GUI-test",
+                "filename": "testFilename",
+               }
     action = "Image Uploaded"
-    log_result = fs.log_to_DB(in_data, client_name, action)
+    log_result = fs.log_to_DB(log_data, action)
     exp_log_result = db.Logging.find_one({"timestamp": timestamp})["_id"]
-    assert result == exp_result
+    assert log_result == exp_log_result
