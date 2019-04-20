@@ -137,6 +137,22 @@ def imageUpload():
 
 
 def log_to_DB(log_data, action):
+    """Creates log entries to MongoDB Cloud Database
+
+    Adds to "Logging" collection on MongoDB for various actions performed
+    by the client. Currently includes actions for:
+    - Image Data Received from Client
+    - Image Data Matched
+    - Image Decoded
+    - Image Uploaded
+
+    Args:
+        log_data (dictionary): contains user, client, and filename attributes
+        action (string): the image action which is being logged
+
+    Returns:
+        string: MongoDB ObjectID of the inserted object
+    """
     timestamp = datetime.utcnow()
     log_data["timestamp"] = timestamp
     log_data["action"] = action
