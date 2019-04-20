@@ -95,6 +95,13 @@ def imageUpload():
         matchedData, errorCode (string): processed image, data, and more
     """
     in_data = request.get_json()
+    log_data = {
+                "user": in_data["user"],
+                "client": in_data["client"],
+                "filename": in_data["filename"],
+               }
+    action = "Image Data Received from Client"
+    log_result = log_to_DB(log_data, action)
     patternDict = get_patternDict(in_data)
     if not patternDict:
         batch = in_data["batch"]
@@ -105,7 +112,11 @@ def imageUpload():
         logging.error(errMsg)
         return jsonify({"error": errMsg}), servCode
     matched_data = patternMatching(in_data['image'], patternDict)
+    action = "Image Data Matched"
+    log_result = log_to_DB(log_data, action)
     binary_d4OrigImage = base64.b64decode(in_data['image'])
+    action = "Image Decoded"
+    log_result = log_to_DB(log_data, action)
     orig_img_id = db.d4OrigImg.insert_one({"image": binary_d4OrigImage}).inserted_id
     matched_img_id = db.d4MatchedImg.insert_one({"image": matched_data['ver_Img']}).inserted_id
     data = {
@@ -120,25 +131,17 @@ def imageUpload():
         "filename": in_data['filename']
     }
     img_id = db.d4Images.insert_one(data)
-    client_name = in_data["client"]
     action = "Image Uploaded"
-    result = log_to_DB(data, client_name, action)
+    log_result = log_to_DB(data, client_name, action)
     return jsonify(matched_data), 200
 
 
-def log_to_DB(in_data, client_name, action):
-    user = in_data["user"]
-    timestamp = in_data["timestamp"]
-    filename = in_data["filename"]
-    out_data = {
-                "user": user,
-                "timestamp": timestamp,
-                "client_name": client_name,
-                "filename": filename,
-                "action": action
-               }
-    result = db.Logging.insert_one(out_data).inserted_id
-    return result
+def log_to_DB(log_data, action):
+    timestamp = datetime.utcnow()
+    log_data["timestamp": timestamp]
+    log_data["action": action]
+    log_result = db.Logging.insert_one(log_data).inserted_id
+    return log_result
 
 
 def get_patternDict(data):
