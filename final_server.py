@@ -28,6 +28,10 @@ def init_mongoDB():
     connString = connString + "@bme547-rrjis.mongodb.net/test?retryWrites=true"
     client = MongoClient(connString)
     db = client.Detector_Software
+    return db
+
+# Global variable for database object
+db = init_mongoDB()
 
 
 @app.route("/", methods=['GET'])
@@ -370,5 +374,4 @@ def validate_image(in_data):
 
 if __name__ == '__main__':
     logging.basicConfig(filename="logfile.log", level=logging.INFO)
-    init_mongoDB()
     app.run()
