@@ -14,6 +14,6 @@ def test_log_to_DB():
               }
     client_name = "GUI-test"
     action = "Image Uploaded"
-    result = fs.log_to_DB(in_data, client_name, action)
-    exp_result = db.Logging.find_one({"timestamp": timestamp})["_id"]
+    log_result = fs.log_to_DB(in_data, client_name, action)
+    exp_log_result = db.Logging.find_one({"timestamp": timestamp})["_id"]
     assert result == exp_result
