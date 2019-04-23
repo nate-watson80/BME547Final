@@ -23,15 +23,42 @@ import logging
 app = Flask(__name__)
 
 
+def main():
+    """Main code for module
+
+    Creates a logging file and kicks off flask web server
+
+    Args:
+        None
+
+    Return:
+        None
+    """
+    logging.basicConfig(filename="logfile.log", level=logging.INFO)
+    app.run()
+
+
 def init_mongoDB():
+    """Initializes the MongoDB
+
+    Creates database object (which is stored to a global variable "db")
+    which contains connection info to MongoDB database and MongoDB collection
+    "Detector_Software"
+
+    Args:
+        None
+
+    Returns:
+        db (database object): MongoDB database
+    """
     connString = "mongodb+srv://bme547:.9w-UVfWaMDCsuL"
     connString = connString + "@bme547-rrjis.mongodb.net/test?retryWrites=true"
     client = MongoClient(connString)
     db = client.Detector_Software
     return db
 
-# Global variable for database object
-db = init_mongoDB()
+
+db = init_mongoDB()  # use a global variable for database object
 
 
 @app.route("/", methods=['GET'])
