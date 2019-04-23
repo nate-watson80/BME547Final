@@ -119,7 +119,8 @@ def imageUpload():
         in_data (json/dictionary): b64 encoded image, batch/pattern name, more
 
     Returns:
-        matchedData, errorCode (string): processed image, data, and more
+        matchedData (string): processed image, data, and more
+        errorCode (int): HTTP status code
     """
     in_data = request.get_json()
     log_data = {
