@@ -129,7 +129,7 @@ def imageUpload():
                 "filename": in_data["filename"],
                }
     action = "Image Data Received from Client"
-    log_result = log_to_DB(log_data, action)
+    timestamp_id = log_to_DB(log_data, action)
     patternDict = get_patternDict(in_data)
     if not patternDict:
         batch = in_data["batch"]
@@ -141,10 +141,10 @@ def imageUpload():
         return jsonify({"error": errMsg}), servCode
     matched_data = patternMatching(in_data['image'], patternDict)
     action = "Image Data Matched"
-    log_result = log_to_DB(log_data, action)
+    timestamp_id = log_to_DB(log_data, action)
     binary_d4OrigImage = base64.b64decode(in_data['image'])
     action = "Image Decoded"
-    log_result = log_to_DB(log_data, action)
+    timestamp_id = log_to_DB(log_data, action)
     orig_img_id = db.d4OrigImg.insert_one({"image": binary_d4OrigImage}).inserted_id
     matched_img_id = db.d4MatchedImg.insert_one({"image": matched_data['ver_Img']}).inserted_id
     data = {
@@ -160,7 +160,7 @@ def imageUpload():
     }
     img_id = db.d4Images.insert_one(data)
     action = "Image Uploaded"
-    log_result = log_to_DB(data, client_name, action)
+    timestamp_id = log_to_DB(log_data, action)
     return jsonify(matched_data), 200
 
 
@@ -173,19 +173,22 @@ def log_to_DB(log_data, action):
     - Image Data Matched
     - Image Decoded
     - Image Uploaded
+    Stores timestamp as primary key for "Logging" collection. Timestamp is
+    rounded to the nearest 1000 microseconds (nearest 1 millisecond).
 
     Args:
         log_data (dictionary): contains user, client, and filename attributes
         action (string): the image action which is being logged
 
     Returns:
-        log_result (string): MongoDB ObjectID of the inserted object
+        timestamp_id (string): this log entry's primary key value
     """
     timestamp = datetime.utcnow()
-    log_data["timestamp"] = timestamp
+    timestamp = timestamp.replace(microsecond=round(timestamp.microsecond, -3))
+    log_data["_id"] = timestamp
     log_data["action"] = action
-    log_result = db.Logging.insert_one(log_data).inserted_id
-    return log_result
+    timestamp_id = db.Logging.insert_one(log_data).inserted_id
+    return timestamp_id
 
 
 def get_patternDict(data):
