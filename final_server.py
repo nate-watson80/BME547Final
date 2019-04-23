@@ -62,7 +62,6 @@ def init_mongoDB():
 db = init_mongoDB()  # use a global variable for database object
 
 
-
 @app.route("/", methods=['GET'])
 def server_on():
     """Basic Check to see that the server is up
@@ -76,7 +75,6 @@ def server_on():
         Server status
     """
     return "The server is up! Should be ready to rock and roll", 200
-
 
 
 @app.route("/pullAllData", methods=['GET'])
@@ -136,8 +134,9 @@ def imageUpload():
     patternDict = get_patternDict(in_data)
     if not patternDict:
         batch = in_data["batch"]
-        logging.error("Batch " + batch + " not recognized contact distributor.")
-        return jsonify({"error": "Batch not recognized contact distributor."}), 400
+        errStr = "Batch " + batch + " not recognized contact distributor."
+        logging.error(errStr)
+        return jsonify({"error": errStr}), 400
     servCode, errMsg = validate_image(in_data)
     if errMsg:
         logging.error(errMsg)
@@ -220,23 +219,25 @@ def circlePixelID(circleData):
         pixelLocations (list): list of all pixel locations within a circle
     """
     pixelLocations = []
-    xCoordCirc = circleData[0] # separates the x and y coordinates of the center of the circles and the circle radius
+    # separates the x and y coordinates of the center of the circles and the
+    # circle radius
+    xCoordCirc = circleData[0]
     yCoordCirc = circleData[1]
     radiusCirc = circleData[2]
-    for exesInCircle in range(( xCoordCirc - radiusCirc ),
-                              ( xCoordCirc + radiusCirc )):
+    for exesInCircle in range((xCoordCirc - radiusCirc),
+                              (xCoordCirc + radiusCirc)):
         # Calculates the y-coordinates that define the top and bottom bounds
         # of a slice (at x position) of the circle
         whyRange = np.sqrt(
-            pow(radiusCirc,2) - pow((exesInCircle - xCoordCirc),2))
+            pow(radiusCirc, 2) - pow((exesInCircle - xCoordCirc), 2))
         discreteWhyRange = int(whyRange)
-        for whysInCircle in range(( yCoordCirc - discreteWhyRange),
-                                  ( yCoordCirc + discreteWhyRange)):
-            pixelLocations.append([exesInCircle,whysInCircle])
+        for whysInCircle in range((yCoordCirc - discreteWhyRange),
+                                  (yCoordCirc + discreteWhyRange)):
+            pixelLocations.append([exesInCircle, whysInCircle])
     return pixelLocations
 
 
-def decodeImage(str_encoded_img, color = False):
+def decodeImage(str_encoded_img, color=False):
     """ Takes an base 64 encoded image and converts it to a image array. Has
     the option to conserve the original color or just as a greyscale.
 
@@ -350,7 +351,7 @@ def templateMatch8b(image, pattern):
     _, _, _, testCenter = cv2.minMaxLoc(gausCenterWeight)
     print("gaussian center: " + str(testCenter))
     weightedRes = res * gausCenterWeight
-    _, _ , _, max_loc = cv2.minMaxLoc(weightedRes)
+    _, _, _, max_loc = cv2.minMaxLoc(weightedRes)
     print(max_loc)  # max loc is reported as written as column,row...
     bottomRightPt = (max_loc[0] + stdCols,
                      max_loc[1] + stdRows)

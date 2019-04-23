@@ -2,6 +2,7 @@ import sys
 import config
 from qtpy import QtCore, QtWidgets, QtGui
 
+
 class LaunchDialog(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super(LaunchDialog, self).__init__(parent)
@@ -34,7 +35,7 @@ class LaunchDialog(QtWidgets.QDialog):
         okBtn = QtWidgets.QPushButton('ok', self)
         okBtn.clicked.connect(self.ok_pressed)
 
-        grid.addWidget(okBtn,4,2)
+        grid.addWidget(okBtn, 4, 2)
         self.setWindowTitle(config.TITLE)
         self.setLayout(grid)
         self.setGeometry(300, 300, 350, 200)
@@ -49,7 +50,8 @@ class LaunchDialog(QtWidgets.QDialog):
         if grp == "":
             err = "Test group cannot be empty"
         if err != "":
-            reply = QtWidgets.QMessageBox.warning(self, 'Message', err, QtWidgets.QMessageBox.Ok)
+            reply = QtWidgets.QMessageBox.warning(self, 'Message', err,
+                                                  QtWidgets.QMessageBox.Ok)
         else:
             self.okPressed = True
             self.close()
@@ -77,22 +79,22 @@ class LaunchDialog(QtWidgets.QDialog):
             event.accept()
         else:
             mb = QtWidgets.QMessageBox
-            reply = mb.question(self, 'Message',
-            "Do you want to quit?", mb.Yes, mb.No)
+            reply = mb.question(self, 'Message', "Do you want to quit?",
+                                mb.Yes, mb.No)
             if reply == mb.Yes:
                 self.user.setText("")
                 self.batch.setText("")
                 self.grp.setText("")
                 event.accept()
             else:
-                event.ignore()     
+                event.ignore()
 
     @staticmethod
     def get_data(parent=None):
         dialog = LaunchDialog(parent)
         dialog.exec_()
         return {
-            'user': dialog.get_user(), 
-            'batch': dialog.get_batch(), 
-            'img_grp': dialog.get_grp()
-        }
+                'user': dialog.get_user(),
+                'batch': dialog.get_batch(),
+                'img_grp': dialog.get_grp()
+               }
