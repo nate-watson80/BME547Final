@@ -184,6 +184,7 @@ def log_to_DB(log_data, action):
     timestamp = datetime.utcnow()
     log_data["timestamp"] = timestamp
     log_data["action"] = action
+    log_data["_id"] = log_data["timestamp"]
     log_result = db.Logging.insert_one(log_data).inserted_id
     return log_result
 
