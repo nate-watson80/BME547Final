@@ -178,7 +178,7 @@ def log_to_DB(log_data, action):
         action (string): the image action which is being logged
 
     Returns:
-        string: MongoDB ObjectID of the inserted object
+        log_result (string): MongoDB ObjectID of the inserted object
     """
     timestamp = datetime.utcnow()
     log_data["timestamp"] = timestamp
