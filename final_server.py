@@ -88,9 +88,7 @@ def pullAllData():
 
     Returns:
         payload (jsonify(dict)): Processed data return
-
     """
-
     pullFileNames = []
     pullSpotData = []
     pullBgData = []
