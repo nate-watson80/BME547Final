@@ -173,13 +173,15 @@ def log_to_DB(log_data, action):
     - Image Data Matched
     - Image Decoded
     - Image Uploaded
+    Stores timestamp as primary key for "Logging" collection. Timestamp is
+    rounded to the nearest 1000 microseconds (nearest 1 millisecond).
 
     Args:
         log_data (dictionary): contains user, client, and filename attributes
         action (string): the image action which is being logged
 
     Returns:
-        log_result (string): MongoDB ObjectID of the inserted object
+        timestamp_id (string): this log entry's primary key value
     """
     timestamp = datetime.utcnow()
     timestamp = timestamp.replace(microsecond=round(timestamp.microsecond, -3))
