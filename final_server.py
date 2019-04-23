@@ -420,5 +420,4 @@ def validate_image(in_data):
     return 200, None
 
 if __name__ == '__main__':
-    logging.basicConfig(filename="logfile.log", level=logging.INFO)
-    app.run()
+    main()
