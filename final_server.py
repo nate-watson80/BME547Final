@@ -23,15 +23,42 @@ import logging
 app = Flask(__name__)
 
 
+def main():
+    """Main code for module
+
+    Creates a logging file and kicks off flask web server
+
+    Args:
+        None
+
+    Return:
+        None
+    """
+    logging.basicConfig(filename="logfile.log", level=logging.INFO)
+    app.run()
+
+
 def init_mongoDB():
+    """Initializes the MongoDB
+
+    Creates database object (which is stored to a global variable "db")
+    which contains connection info to MongoDB database and MongoDB collection
+    "Detector_Software"
+
+    Args:
+        None
+
+    Returns:
+        db (database object): MongoDB database
+    """
     connString = "mongodb+srv://bme547:.9w-UVfWaMDCsuL"
     connString = connString + "@bme547-rrjis.mongodb.net/test?retryWrites=true"
     client = MongoClient(connString)
     db = client.Detector_Software
     return db
 
-# Global variable for database object
-db = init_mongoDB()
+
+db = init_mongoDB()  # use a global variable for database object
 
 
 @app.route("/", methods=['GET'])
@@ -92,7 +119,8 @@ def imageUpload():
         in_data (json/dictionary): b64 encoded image, batch/pattern name, more
 
     Returns:
-        matchedData, errorCode (string): processed image, data, and more
+        matchedData (string): processed image, data, and more
+        errorCode (int): HTTP status code
     """
     in_data = request.get_json()
     log_data = {
@@ -151,7 +179,7 @@ def log_to_DB(log_data, action):
         action (string): the image action which is being logged
 
     Returns:
-        string: MongoDB ObjectID of the inserted object
+        log_result (string): MongoDB ObjectID of the inserted object
     """
     timestamp = datetime.utcnow()
     log_data["timestamp"] = timestamp
@@ -393,5 +421,4 @@ def validate_image(in_data):
     return 200, None
 
 if __name__ == '__main__':
-    logging.basicConfig(filename="logfile.log", level=logging.INFO)
-    app.run()
+    main()
