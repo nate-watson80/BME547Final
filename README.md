@@ -2,7 +2,8 @@
 ## BME 547: Medical Software Design
 ## Final Version is tagged as `v1.0.0`
 
-
+to run server:
+`$ FLASK_APP=final_server.py flask run`
 
 you'll need to download mongo db community edition to run the server locally, but otherwise this should work
 
