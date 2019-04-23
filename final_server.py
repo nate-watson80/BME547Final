@@ -160,7 +160,7 @@ def imageUpload():
     }
     img_id = db.d4Images.insert_one(data)
     action = "Image Uploaded"
-    log_result = log_to_DB(data, client_name, action)
+    log_result = log_to_DB(log_data, action)
     return jsonify(matched_data), 200
 
 
