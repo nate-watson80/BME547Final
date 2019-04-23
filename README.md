@@ -1,8 +1,12 @@
-# BME547Final
+# D4 Detector Software
+## BME 547: Medical Software Design
+## Final Version is tagged as `v1.0.0`
+
+
 
 you'll need to download mongo db community edition to run the server locally, but otherwise this should work
 
-set up your virtual environment and then try using 
+set up your virtual environment and then try using
 `pip install -r freshRequirements.txt`
 to populate it with all the packages i think you'll need
 
