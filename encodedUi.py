@@ -41,6 +41,10 @@ class Ui_MainWindow(object):
         self.lineEdit.setObjectName("lineEdit")
         self.verticalLayout.addWidget(self.lineEdit)
 
+        self.submitQuery = QtWidgets.QPushButton(self.centralwidget)
+        self.submitQuery.setObjectName("submitQuery")
+        self.verticalLayout.addWidget(self.submitQuery)
+
         self.readImgButton = QtWidgets.QPushButton(self.centralwidget)
         self.readImgButton.setObjectName("readImgButton")
         self.verticalLayout.addWidget(self.readImgButton)
@@ -81,5 +85,7 @@ class Ui_MainWindow(object):
             "", "Press 'Open Image' button'", None, -1))
         self.pullAllData.setText(QtWidgets.QApplication.translate(
             "", "Pull Data to outputData.csv", None, -1))
+        self.submitQuery.setText(QtWidgets.QApplication.translate(
+            "", "View entered filename from server", None, -1))
         self.testServerButton.setText(
             QtWidgets.QApplication.translate("", "Test Server!", None, -1))
