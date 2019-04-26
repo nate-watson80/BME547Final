@@ -21,6 +21,7 @@ import numpy as np
 import requests
 import json
 import config
+import csv
 
 from encodedUi import Ui_MainWindow
 from launch_dialog import LaunchDialog
@@ -65,6 +66,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.readImgButton.clicked.connect(self.openImage)
         self.testServerButton.clicked.connect(self.testServer)
         self.uploadImgButton.clicked.connect(self.uploadImage)
+        self.pullAllData.clicked.connect(self.writeCSVData)
         # self.lineEdit.editingFinished.connect(self.goodbyeWorld)
         self.plotting_widget.setLayout(QVBoxLayout())
 
@@ -102,12 +104,33 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                                                None,
                                                                -1))
 
+    def writeCSVData(self):
+        URL = "http://vcm-9184.vm.duke.edu:5000/pullAllData"
+        response = requests.get(URL)
+        outLines = []
+        for iterator, eachEntry in enumerate(response.json()['filename']):
+            eachLine = [response.json()['filename'][iterator]]
+            eachLine.append("spots: ")
+            for eachSpot in response.json()['spots'][iterator]:
+                eachLine.append(eachSpot)
+            eachLine.append("background: ")
+            eachLine.append(response.json()['background'][iterator])
+            outLines.append(eachLine)
+        with open('outputData.csv', 'w', newline='') as writeFile:
+            writer = csv.writer(writeFile)
+            writer.writerows(outLines)
+        string = "all available image data written to outputData.csv"
+        self.serverResponse.setText(QtWidgets.QApplication.translate("",
+                                                                     string,
+                                                                     None,
+                                                                     -1))
+
     def uploadImage(self):
         with open(self.filePath, "rb") as image_file:
             b64_imageBytes = base64.b64encode(image_file.read())
         b64_imgString = str(b64_imageBytes, encoding='utf-8')
-        URL = "http://127.0.0.1:5000/imageUpload"
-        # URL = "http://vcm-9184.vm.duke.edu:5000/imageUpload"
+        #URL = "http://127.0.0.1:5000/imageUpload"
+        URL = "http://vcm-9184.vm.duke.edu:5000/imageUpload"
         payload = {"client": "GUI-test",
                    "image": b64_imgString,
                    "user": self.user,
@@ -129,8 +152,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                                                      -1))
 
     def testServer(self):
-        URL = "http://127.0.0.1:5000/"
-        # URL = "http://vcm-9184.vm.duke.edu:5000/"
+        #URL = "http://127.0.0.1:5000/"
+        URL = "http://vcm-9184.vm.duke.edu:5000/"
         response = requests.get(URL).text
         self.serverResponse.setText(QtWidgets.QApplication.translate("",
                                                                      response,
