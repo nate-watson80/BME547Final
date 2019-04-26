@@ -25,3 +25,4 @@ urllib3==1.24.2
 Werkzeug==0.15.2
 pytest
 pytest-pep8
+sphinx==1.8.4
