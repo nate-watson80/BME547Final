@@ -1,6 +1,7 @@
 # D4 Detector Software
-## BME 547: Medical Software Design
-## Final Version is tagged as `v1.0.0`
+### BME 547: Medical Software Design
+### Final Version is tagged as `v1.0.0`
+### Jason Liu, Nate Watson, Jason Cooper
 
 
 ## D4 Detector Application:
@@ -62,7 +63,7 @@ information associated with it:
 * `GET /`: Initial server root to determine if the server is up and running.
 
 * `GET /pullAllData`: This route is utilized to pull all of the image data that
-is currently on the database. 
+is currently on the database.
 
 
 ## License:
