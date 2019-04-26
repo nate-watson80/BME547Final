@@ -53,6 +53,10 @@ class Ui_MainWindow(object):
         self.testServerButton.setObjectName("testServerButton")
         self.verticalLayout.addWidget(self.testServerButton)
 
+        self.pullAllData = QtWidgets.QPushButton(self.centralwidget)
+        self.pullAllData.setObjectName("pullAllData")
+        self.verticalLayout.addWidget(self.pullAllData)
+
         self.horizontalLayout.addLayout(self.verticalLayout)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
@@ -75,5 +79,7 @@ class Ui_MainWindow(object):
             "", "Upload Image to Server", None, -1))
         self.fileName.setText(QtWidgets.QApplication.translate(
             "", "Press 'Open Image' button'", None, -1))
+        self.pullAllData.setText(QtWidgets.QApplication.translate(
+            "", "Pull Data to outputData.csv", None, -1))
         self.testServerButton.setText(
             QtWidgets.QApplication.translate("", "Test Server!", None, -1))
