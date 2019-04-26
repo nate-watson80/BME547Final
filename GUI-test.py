@@ -113,7 +113,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                     [response.json()['filename'][iterator],
                      response.json()['spots'][iterator],
                      response.json()['background'][iterator]])
-        with open('outputData.csv', 'w') as writeFile:
+        with open('outputData.csv', 'w', newline='') as writeFile:
             writer = csv.writer(writeFile)
             writer.writerows(outLines)
         string = "all available image data written to outputData.csv"
