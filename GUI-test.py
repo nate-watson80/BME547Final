@@ -108,6 +108,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         URL = "http://vcm-9184.vm.duke.edu:5000/pullAllData"
         response = requests.get(URL)
         outLines = []
+        print(type(response.json()['filename']))
         for iterator, eachEntry in enumerate(response['filename']):
             outLines.append(
                     [response['filename'][iterator],
