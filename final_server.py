@@ -166,6 +166,21 @@ def imageUpload():
     return jsonify(matched_data), 200
 
 
+@app.route("/pullImage/<qFileName>", methods=["GET"])
+def pullImage(qFileName):
+    if verifyFileName(qFileName):
+        data = db.d4Images.find_one({"filename": qFileName})
+        verImage = db.d4MatchedImg.find_one({"_id": data["matched_image"]})
+        payload = {"status": "found image",
+                   "image": str(verImage["image"])}
+        return jsonify(payload), 200
+    else:
+        return "missing", 400
+
+def verifyFileName(fileName):
+    return True
+
+
 def log_to_DB(log_data, action):
     """Creates log entries to MongoDB Cloud Database
 

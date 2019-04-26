@@ -105,7 +105,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                                                -1))
 
     def queryImage(self):
-        print(self.lineEdit.text())
+        # URL = "http://vcm-9184.vm.duke.edu:5000/pullImage/"
+        URL = "http://127.0.0.1:5000/pullImage/"
+        response = requests.get(URL+self.lineEdit.text())
+        #print(response.json()["status"])
+        verImage = decodeImage(response.json()["image"], color = True)
+        self.plot_ax.clear()
+        self.plot_ax.imshow(verImage, interpolation='nearest')
+        self.plot_ax.axis('off')
+        self.plot_ax.figure.canvas.draw()
+        string = "Showing queried file from server: " + self.lineEdit.text()
+        self.serverResponse.setText(QtWidgets.QApplication.translate("",
+                                                                     string,
+                                                                     None,
+                                                                     -1))
+
 
     def writeCSVData(self):
         URL = "http://vcm-9184.vm.duke.edu:5000/pullAllData"
@@ -132,8 +146,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         with open(self.filePath, "rb") as image_file:
             b64_imageBytes = base64.b64encode(image_file.read())
         b64_imgString = str(b64_imageBytes, encoding='utf-8')
-        # URL = "http://127.0.0.1:5000/imageUpload"
-        URL = "http://vcm-9184.vm.duke.edu:5000/imageUpload"
+        URL = "http://127.0.0.1:5000/imageUpload"
+        # URL = "http://vcm-9184.vm.duke.edu:5000/imageUpload"
         payload = {"client": "GUI-test",
                    "image": b64_imgString,
                    "user": self.user,
