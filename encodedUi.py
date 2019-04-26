@@ -41,6 +41,10 @@ class Ui_MainWindow(object):
         self.lineEdit.setObjectName("lineEdit")
         self.verticalLayout.addWidget(self.lineEdit)
 
+        self.submitQuery = QtWidgets.QPushButton(self.centralwidget)
+        self.submitQuery.setObjectName("submitQuery")
+        self.verticalLayout.addWidget(self.submitQuery)
+
         self.readImgButton = QtWidgets.QPushButton(self.centralwidget)
         self.readImgButton.setObjectName("readImgButton")
         self.verticalLayout.addWidget(self.readImgButton)

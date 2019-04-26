@@ -67,7 +67,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.testServerButton.clicked.connect(self.testServer)
         self.uploadImgButton.clicked.connect(self.uploadImage)
         self.pullAllData.clicked.connect(self.writeCSVData)
-        # self.lineEdit.editingFinished.connect(self.goodbyeWorld)
+        self.submitQuery.clicked.connect(self.queryImage)
         self.plotting_widget.setLayout(QVBoxLayout())
 
         self.plotting_matplotlib_canvas = FigureCanvas(figure=Figure())
@@ -103,6 +103,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                                                newFilePath,
                                                                None,
                                                                -1))
+
+    def queryImage(self):
+        print(self.lineEdit.text())
 
     def writeCSVData(self):
         URL = "http://vcm-9184.vm.duke.edu:5000/pullAllData"
