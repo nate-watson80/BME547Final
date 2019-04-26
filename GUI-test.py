@@ -108,12 +108,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         URL = "http://vcm-9184.vm.duke.edu:5000/pullAllData"
         response = requests.get(URL)
         outLines = []
-        print(type(response.json()['filename']))
-        for iterator, eachEntry in enumerate(response['filename']):
+        for iterator, eachEntry in enumerate(response.json()['filename']):
             outLines.append(
-                    [response['filename'][iterator],
-                     response['spots'][iterator],
-                     response['background'][iterator]])
+                    [response.json()['filename'][iterator],
+                     response.json()['spots'][iterator],
+                     response.json()['background'][iterator]])
         with open('outputData.csv', 'w') as writeFile:
             writer = csv.writer(writeFile)
             writer.writerows(outLines)
