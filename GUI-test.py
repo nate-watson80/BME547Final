@@ -109,10 +109,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         response = requests.get(URL)
         outLines = []
         for iterator, eachEntry in enumerate(response.json()['filename']):
-            outLines.append(
-                    [response.json()['filename'][iterator],
-                     response.json()['spots'][iterator],
-                     response.json()['background'][iterator]])
+            eachLine = [response.json()['filename'][iterator]]
+            eachLine.append("spots: ")
+            for eachSpot in response.json()['spots'][iterator]:
+                eachLine.append(eachSpot)
+            eachLine.append("background: ")
+            eachLine.append(response.json()['background'][iterator])
+            outLines.append(eachLine)
         with open('outputData.csv', 'w', newline='') as writeFile:
             writer = csv.writer(writeFile)
             writer.writerows(outLines)
