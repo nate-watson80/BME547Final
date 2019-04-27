@@ -148,7 +148,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         with open(self.filePath, "rb") as image_file:
             b64_imageBytes = base64.b64encode(image_file.read())
         b64_imgString = str(b64_imageBytes, encoding='utf-8')
-        URL = baseURL+"/imageUpload"
+        URL = baseURL+"imageUpload"
         payload = {"client": "GUI-test",
                    "image": b64_imgString,
                    "user": self.user,
