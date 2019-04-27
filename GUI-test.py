@@ -27,6 +27,9 @@ from encodedUi import Ui_MainWindow
 from launch_dialog import LaunchDialog
 
 
+baseURL = "http://127.0.0.1:5000/"
+#baseURL = "http://vcm-9091.vm.duke.edu:5000/""
+
 def decodeImage(str_encoded_img, color=False):
     """Function to decode input images.
 
@@ -105,8 +108,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                                                -1))
 
     def queryImage(self):
-        # URL = "http://vcm-9184.vm.duke.edu:5000/pullImage/"
-        URL = "http://127.0.0.1:5000/pullImage/"
+        URL = baseURL+"pullImage"
         response = requests.get(URL+self.lineEdit.text())
         #print(response.json()["status"])
         verImage = decodeImage(response.json()["image"], color = True)
@@ -122,7 +124,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def writeCSVData(self):
-        URL = "http://vcm-9184.vm.duke.edu:5000/pullAllData"
+        URL = baseURL+"pullAllData"
         response = requests.get(URL)
         outLines = []
         for iterator, eachEntry in enumerate(response.json()['filename']):
@@ -146,8 +148,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         with open(self.filePath, "rb") as image_file:
             b64_imageBytes = base64.b64encode(image_file.read())
         b64_imgString = str(b64_imageBytes, encoding='utf-8')
-        URL = "http://127.0.0.1:5000/imageUpload"
-        # URL = "http://vcm-9184.vm.duke.edu:5000/imageUpload"
+        URL = baseURL+"/imageUpload"
         payload = {"client": "GUI-test",
                    "image": b64_imgString,
                    "user": self.user,
@@ -169,8 +170,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                                                      -1))
 
     def testServer(self):
-        # URL = "http://127.0.0.1:5000/"
-        URL = "http://vcm-9184.vm.duke.edu:5000/"
+        URL = baseURL
         response = requests.get(URL).text
         self.serverResponse.setText(QtWidgets.QApplication.translate("",
                                                                      response,
