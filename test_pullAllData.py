@@ -68,5 +68,7 @@ def test_pullAllData():
                                        44654.580544747085]]
                            }
         exp_http_status = 200
-        assert payload == exp_payload
+        assert payload["background"][0] == exp_payload["background"][0]
+        assert payload["filename"][0] == exp_payload["filename"][0]
+        assert payload["spots"][0] == exp_payload["spots"][0]
         assert http_status == exp_http_status

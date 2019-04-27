@@ -36,7 +36,7 @@ def main():
         None
     """
     logging.basicConfig(filename="logfile.log", level=logging.INFO)
-    app.run()
+    app.run(host="0.0.0.0")
 
 
 def init_mongoDB():
@@ -176,6 +176,7 @@ def pullImage(qFileName):
         return jsonify(payload), 200
     else:
         return "missing", 400
+
 
 def verifyFileName(fileName):
     return True
