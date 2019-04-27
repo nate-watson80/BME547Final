@@ -36,7 +36,7 @@ def main():
         None
     """
     logging.basicConfig(filename="logfile.log", level=logging.INFO)
-    app.run()
+    app.run(host="0.0.0.0")
 
 
 def init_mongoDB():
