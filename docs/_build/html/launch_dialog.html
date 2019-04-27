@@ -38,50 +38,188 @@
 <dt id="launch_dialog.LaunchDialog">
 <em class="property">class </em><code class="descclassname">launch_dialog.</code><code class="descname">LaunchDialog</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#launch_dialog.LaunchDialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<p>Class for the launch screen for starting the app.</p>
+<p>This class is designed to provide the layout of the original
+launch window for beginning the application. This window was
+written following the QtPy UI framework. The basic layout of
+this window contains three text entry windows utilized to enter
+intitial data such as the name of the user, the D4 batch number,
+as well as the data group. When all of the appropriate information
+is transfered, the user can proceed to the next window.</p>
 <dl class="method">
 <dt id="launch_dialog.LaunchDialog.batch_changed">
 <code class="descname">batch_changed</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#launch_dialog.LaunchDialog.batch_changed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Method for handling if the the text has been changed.</p>
+<p>This function is utilized to handle any changes that have
+occured when uploading the user into the text box.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>(</strong><strong>) </strong><strong>=</strong> (<em>text</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="launch_dialog.LaunchDialog.closeEvent">
-<code class="descname">closeEvent</code><span class="sig-paren">(</span><em>self</em>, <em>QCloseEvent</em><span class="sig-paren">)</span><a class="headerlink" href="#launch_dialog.LaunchDialog.closeEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">closeEvent</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#launch_dialog.LaunchDialog.closeEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for handling events after pressing the exit button</p>
+<p>This function contains the logical isntructions for processing
+what happens after the exit button is pressed by the user. First,
+a warning prompt is passed to the user to check if they are willing
+to proceed. If the window wishes to be closed, the text is set back
+to blanks and closed down.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>(</strong><strong>) </strong><strong>=</strong> (<em>event</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="launch_dialog.LaunchDialog.get_batch">
 <code class="descname">get_batch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#launch_dialog.LaunchDialog.get_batch" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Method for returning the user’s information that was uploaded.</p>
+<p>This method is used to determine the data that was uploaded by the
+user in order to save it on the server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">batch_input (str) = String containg text passed through by user.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="staticmethod">
 <dt id="launch_dialog.LaunchDialog.get_data">
 <em class="property">static </em><code class="descname">get_data</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#launch_dialog.LaunchDialog.get_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Method for getting all of the data entered at once.</p>
+<p>This function obtains all of the information that has been
+passed to the program thus far at once. It does this by calling
+the functions get_user, get_batch, and get_grp all together and
+passing the data back as a dictionary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>(</strong><strong>) </strong><strong>=</strong> (<em>parent</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>output_dict (dict) = Dictionary containing all of the user</dt>
+<dd>defined information.</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="launch_dialog.LaunchDialog.get_grp">
 <code class="descname">get_grp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#launch_dialog.LaunchDialog.get_grp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Method for returning the user’s information that was uploaded.</p>
+<p>This method is used to determine the data that was uploaded by the
+user in order to save it on the server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">grp_input (str) = String containg text passed through by user.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="launch_dialog.LaunchDialog.get_user">
 <code class="descname">get_user</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#launch_dialog.LaunchDialog.get_user" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Method for returning the user’s information that was uploaded.</p>
+<p>This method is used to determine the data that was uploaded by the
+user in order to save it on the server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">user_input (str) = String containg text passed through by user.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="launch_dialog.LaunchDialog.grp_changed">
 <code class="descname">grp_changed</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#launch_dialog.LaunchDialog.grp_changed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Method for handling if the the text has been changed.</p>
+<p>This function is utilized to handle any changes that have
+occured when uploading the user into the text box.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>(</strong><strong>) </strong><strong>=</strong> (<em>text</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="launch_dialog.LaunchDialog.ok_pressed">
 <code class="descname">ok_pressed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#launch_dialog.LaunchDialog.ok_pressed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Method for regulating what occurs if the OK button is pressed.</p>
+<p>This method controls the user display when buttons are triggered.
+First the get_data() method is called in order to determine the text
+that the user inputted into the text window. Next, string handling is
+done to ensure that none of the parameters are left blank. If there
+are blank entries, the system will provide an error provide. If all
+goes well, the window will terminate.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="launch_dialog.LaunchDialog.user_changed">
 <code class="descname">user_changed</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#launch_dialog.LaunchDialog.user_changed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Method for handling if the the text has been changed.</p>
+<p>This function is utilized to handle any changes that have
+occured when uploading the user into the text box.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>(</strong><strong>) </strong><strong>=</strong> (<em>text</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
