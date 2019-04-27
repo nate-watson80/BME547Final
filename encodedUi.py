@@ -11,9 +11,38 @@ from qtpy import QtCore, QtGui, QtWidgets
 
 
 class Ui_MainWindow(object):
+    """ Class for the UI of the main window.
+
+    This class is designed to provide the layout of the main user
+    interface window. This window was written following the QtPy
+    UI framework. The basic layout of this window contains several
+    buttons in order to upload files to the server, open images that
+    have been previously been uploaded as well as process the spots to
+    understand the test results.
+
+    """
     def setupUi(self, MainWindow):
+        """ Method setting up the locations and layout of UI
+
+        This method is utilized to set up the location and visualization
+        of the main user interface. All buttons, labels, and functionalities
+        are set here. This method can be called to set up the GUI upon calling
+        the class. 
+
+        Args:
+            MainWindow (class) = Class cooresponding to the main UI
+                window.
+
+        Returns:
+            None
+
+        """
+
+        # Main window init/size
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
+
+        # Various button and plotting widgets
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralwidget)
@@ -71,10 +100,25 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
 
+        # Call retranslate method to add text labels
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
+        """ Method adding text onto the various widgets
+
+        This method is designed to add text to the the various
+        widgets that were defied in the Ui_MainWindow class. These
+        buttons allow for user interactions with the server.
+
+        Args:
+            MainWindow (class) = Class cooresponding to the main UI
+                window.
+
+        Returns:
+            None
+
+        """
         MainWindow.setWindowTitle(QtWidgets.QApplication.translate(
             "", "MainWindow", None, -1))
         self.readImgButton.setText(QtWidgets.QApplication.translate(

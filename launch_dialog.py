@@ -32,7 +32,7 @@ class LaunchDialog(QtWidgets.QDialog):
         grid.addWidget(QtWidgets.QLabel('Data Group'), 3, 0)
         grid.addWidget(grpEdit, 3, 1)
 
-        okBtn = QtWidgets.QPushButton('ok', self)
+        okBtn = QtWidgets.QPushButton('Ok', self)
         okBtn.clicked.connect(self.ok_pressed)
 
         grid.addWidget(okBtn, 4, 2)
