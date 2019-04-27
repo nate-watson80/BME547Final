@@ -1,12 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'test-jason.ui'
-#
-# Created: Thu Feb 21 19:56:42 2019
-#      by: qtpy-uic 2.0.4
-#
-# WARNING! All changes made in this file will be lost!
-
 from qtpy import QtCore, QtGui, QtWidgets
 
 
@@ -27,7 +18,7 @@ class Ui_MainWindow(object):
         This method is utilized to set up the location and visualization
         of the main user interface. All buttons, labels, and functionalities
         are set here. This method can be called to set up the GUI upon calling
-        the class. 
+        the class.
 
         Args:
             MainWindow (class) = Class cooresponding to the main UI
