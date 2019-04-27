@@ -4,8 +4,35 @@ from qtpy import QtCore, QtWidgets, QtGui
 
 
 class LaunchDialog(QtWidgets.QDialog):
+    """ Class for the launch screen for starting the app.
+
+        This class is designed to provide the layout of the original
+        launch window for beginning the application. This window was
+        written following the QtPy UI framework. The basic layout of
+        this window contains three text entry windows utilized to enter
+        intitial data such as the name of the user, the D4 batch number,
+        as well as the data group. When all of the appropriate information
+        is transfered, the user can proceed to the next window.
+
+    """
     def __init__(self, parent=None):
+        """ __init__ method for setting up LaunchDialog UI display
+
+        This method is utilized to set up the location and visualization
+        of the launch window. All buttons, labels, and functionalities
+        are set here. This method can be called to set up the GUI upon calling
+        the class.
+
+        Args:
+            parent (class) = Inherited class if present.
+
+        Returns:
+            None
+
+        """
         super(LaunchDialog, self).__init__(parent)
+
+        # Initialize button as off
         self.okPressed = False
 
         self.user = QtWidgets.QLabel()
@@ -32,7 +59,7 @@ class LaunchDialog(QtWidgets.QDialog):
         grid.addWidget(QtWidgets.QLabel('Data Group'), 3, 0)
         grid.addWidget(grpEdit, 3, 1)
 
-        okBtn = QtWidgets.QPushButton('ok', self)
+        okBtn = QtWidgets.QPushButton('Ok', self)
         okBtn.clicked.connect(self.ok_pressed)
 
         grid.addWidget(okBtn, 4, 2)
@@ -41,6 +68,22 @@ class LaunchDialog(QtWidgets.QDialog):
         self.setGeometry(300, 300, 350, 200)
 
     def ok_pressed(self):
+        """ Method for regulating what occurs if the OK button is pressed.
+
+        This method controls the user display when buttons are triggered.
+        First the get_data() method is called in order to determine the text
+        that the user inputted into the text window. Next, string handling is
+        done to ensure that none of the parameters are left blank. If there
+        are blank entries, the system will provide an error provide. If all
+        goes well, the window will terminate.
+
+        Args:
+            None
+        Returns:
+            None
+
+        """
+
         user, batch, grp = self.get_user(), self.get_user(), self.get_user()
         err = ""
         if user == "":
@@ -57,24 +100,117 @@ class LaunchDialog(QtWidgets.QDialog):
             self.close()
 
     def user_changed(self, text):
+        """ Method for handling if the the text has been changed.
+
+        This function is utilized to handle any changes that have
+        occured when uploading the user into the text box.
+
+        Args:
+            text () =
+
+        Returns:
+            None
+
+        """
         self.user.setText(text)
 
     def batch_changed(self, text):
+        """ Method for handling if the the text has been changed.
+
+        This function is utilized to handle any changes that have
+        occured when uploading the user into the text box.
+
+        Args:
+            text () =
+
+        Returns:
+            None
+
+        """
         self.batch.setText(text)
 
     def grp_changed(self, text):
+        """ Method for handling if the the text has been changed.
+
+        This function is utilized to handle any changes that have
+        occured when uploading the user into the text box.
+
+        Args:
+            text () =
+
+        Returns:
+            None
+
+        """
         self.grp.setText(text)
 
     def get_user(self):
-        return self.user.text()
+        """ Method for returning the user's information that was uploaded.
+
+        This method is used to determine the data that was uploaded by the
+        user in order to save it on the server.
+
+        Args:
+            None
+
+        Returns:
+            user_input (str) = String containg text passed through by user.
+
+        """
+        user_input = self.user.text()
+
+        return user_input
 
     def get_batch(self):
-        return self.batch.text()
+        """ Method for returning the user's information that was uploaded.
+
+        This method is used to determine the data that was uploaded by the
+        user in order to save it on the server.
+
+        Args:
+            None
+
+        Returns:
+            batch_input (str) = String containg text passed through by user.
+
+        """
+        batch_input = self.batch.text()
+
+        return batch_input
 
     def get_grp(self):
-        return self.grp.text()
+        """ Method for returning the user's information that was uploaded.
+
+        This method is used to determine the data that was uploaded by the
+        user in order to save it on the server.
+
+        Args:
+            None
+
+        Returns:
+            grp_input (str) = String containg text passed through by user.
+
+        """
+        grp_input = self.grp.text()
+
+        return grp_input
 
     def closeEvent(self, event):
+        """ Method for handling events after pressing the exit button
+
+        This function contains the logical isntructions for processing
+        what happens after the exit button is pressed by the user. First,
+        a warning prompt is passed to the user to check if they are willing
+        to proceed. If the window wishes to be closed, the text is set back
+        to blanks and closed down.
+
+        Args:
+            event () =
+
+        Returns:
+            None
+
+        """
         if self.okPressed:
             event.accept()
         else:
@@ -91,10 +227,28 @@ class LaunchDialog(QtWidgets.QDialog):
 
     @staticmethod
     def get_data(parent=None):
+        """ Method for getting all of the data entered at once.
+
+        This function obtains all of the information that has been
+        passed to the program thus far at once. It does this by calling
+        the functions get_user, get_batch, and get_grp all together and
+        passing the data back as a dictionary.
+
+        Args:
+            parent () =
+
+        Returns:
+            output_dict (dict) = Dictionary containing all of the user
+                defined information.
+
+        """
         dialog = LaunchDialog(parent)
         dialog.exec_()
-        return {
+
+        output_dict = {
                 'user': dialog.get_user(),
                 'batch': dialog.get_batch(),
-                'img_grp': dialog.get_grp()
+                'img_grp': dialog.get_grp(),
                }
+
+        return output_dict
