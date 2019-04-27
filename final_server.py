@@ -397,7 +397,7 @@ def patternMatching(encoded_image, patternDict):
         patternDict (dictionary): dictionary with encoded pattern
     Returns:
         payload (dictionary): contains verification image and the brightnesses
-                                of the spots and of the background
+                              of the spots and of the background
     """
     rawImg16b = decodeImage(encoded_image)
     pattern, spotMask, bgMask = generatePatternMasks(patternDict['spot_info'],
