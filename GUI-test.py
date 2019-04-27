@@ -28,7 +28,8 @@ from launch_dialog import LaunchDialog
 
 
 baseURL = "http://127.0.0.1:5000/"
-#baseURL = "http://vcm-9091.vm.duke.edu:5000/""
+# baseURL = "http://vcm-9091.vm.duke.edu:5000/""
+
 
 def decodeImage(str_encoded_img, color=False):
     """Function to decode input images.
@@ -110,8 +111,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def queryImage(self):
         URL = baseURL+"pullImage"
         response = requests.get(URL+self.lineEdit.text())
-        #print(response.json()["status"])
-        verImage = decodeImage(response.json()["image"], color = True)
+        # print(response.json()["status"])
+        verImage = decodeImage(response.json()["image"], color=True)
         self.plot_ax.clear()
         self.plot_ax.imshow(verImage, interpolation='nearest')
         self.plot_ax.axis('off')
@@ -121,7 +122,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                                                      string,
                                                                      None,
                                                                      -1))
-
 
     def writeCSVData(self):
         URL = baseURL+"pullAllData"
