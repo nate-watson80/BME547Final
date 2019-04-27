@@ -3,7 +3,7 @@ import pytest
 from pymongo import MongoClient
 from flask import Flask, jsonify, request
 
-db = fs.init_mongoDB()
+db = fs.db
 app = Flask(__name__)
 
 

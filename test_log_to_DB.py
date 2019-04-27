@@ -2,7 +2,7 @@ import final_server as fs
 import pytest
 from pymongo import MongoClient
 
-db = fs.init_mongoDB()
+db = fs.db
 
 
 def test_log_to_DB():
