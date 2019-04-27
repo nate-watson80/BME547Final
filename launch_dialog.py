@@ -99,7 +99,6 @@ class LaunchDialog(QtWidgets.QDialog):
             self.okPressed = True
             self.close()
 
-
     def user_changed(self, text):
         """ Method for handling if the the text has been changed.
 
@@ -114,7 +113,6 @@ class LaunchDialog(QtWidgets.QDialog):
 
         """
         self.user.setText(text)
-
 
     def batch_changed(self, text):
         """ Method for handling if the the text has been changed.
@@ -131,7 +129,6 @@ class LaunchDialog(QtWidgets.QDialog):
         """
         self.batch.setText(text)
 
-
     def grp_changed(self, text):
         """ Method for handling if the the text has been changed.
 
@@ -146,7 +143,6 @@ class LaunchDialog(QtWidgets.QDialog):
 
         """
         self.grp.setText(text)
-
 
     def get_user(self):
         """ Method for returning the user's information that was uploaded.
@@ -165,7 +161,6 @@ class LaunchDialog(QtWidgets.QDialog):
 
         return user_input
 
-
     def get_batch(self):
         """ Method for returning the user's information that was uploaded.
 
@@ -183,7 +178,6 @@ class LaunchDialog(QtWidgets.QDialog):
 
         return batch_input
 
-
     def get_grp(self):
         """ Method for returning the user's information that was uploaded.
 
@@ -200,7 +194,6 @@ class LaunchDialog(QtWidgets.QDialog):
         grp_input = self.grp.text()
 
         return grp_input
-
 
     def closeEvent(self, event):
         """ Method for handling events after pressing the exit button
