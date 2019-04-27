@@ -28,7 +28,7 @@ from launch_dialog import LaunchDialog
 
 
 baseURL = "http://127.0.0.1:5000/"
-# baseURL = "http://vcm-9091.vm.duke.edu:5000/""
+# baseURL = "http://vcm-9091.vm.duke.edu:5000/"
 
 
 def decodeImage(str_encoded_img, color=False):
