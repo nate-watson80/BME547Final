@@ -12,8 +12,8 @@ Welcome to BME547Final's documentation!
 
    final_server
    GUI-test
-   encodedUI
-
+   encodedUi
+   launch_dialog
 
 
 Indices and tables

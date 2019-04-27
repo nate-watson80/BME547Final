@@ -44,8 +44,10 @@ def decodeImage(str_encoded_img, color=False):
 
         color (bool) = Bool number to determine if file is
             a color file.
+
     Returns:
         orig_img () = Original image after it has been decoded
+        
     """
 
     decoded_img = base64.b64decode(str_encoded_img)
