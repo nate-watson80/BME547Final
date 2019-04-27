@@ -383,7 +383,9 @@ def templateMatch8b(image, pattern):
 
 
 def patternMatching(encoded_image, patternDict):
-    """ takes the input image to be processed and the pattern, and finds the
+    """Performs pattern matching algorithm on uploaded image
+
+    Takes the input image to be processed and the pattern, and finds the
     circles, draws circles on a copy of the original image- on a verification
     image. Then, this program quantifies the brightness of the spot features
     and the background intensity within the pattern (not-spot areas). Spits out
@@ -396,7 +398,6 @@ def patternMatching(encoded_image, patternDict):
     Returns:
         payload (dictionary): contains verification image and the brightnesses
                                 of the spots and of the background
-
     """
     rawImg16b = decodeImage(encoded_image)
     pattern, spotMask, bgMask = generatePatternMasks(patternDict['spot_info'],
