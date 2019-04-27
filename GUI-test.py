@@ -47,7 +47,6 @@ def decodeImage(str_encoded_img, color=False):
 
     Returns:
         orig_img () = Original image after it has been decoded
-        
     """
 
     decoded_img = base64.b64decode(str_encoded_img)
