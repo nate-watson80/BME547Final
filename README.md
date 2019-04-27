@@ -51,10 +51,10 @@ locally, run the following command in the base directory:
 * If server has been deployed to Duke University virtual machine it has the following
 information associated with it:
 
-      * Hostname: `vcm-9091.vm.duke.edu` - CHANGE when we know which machine
-      * Port: `5000`
-      * Operating System: `Ubuntu16.04 Server`
-      * URL of root directory: `http://vcm-9091.vm.duke.edu:5000/`
+  * Hostname: `vcm-9091.vm.duke.edu`
+  * Port: `5000`
+  * Operating System: `Ubuntu18 Server`
+  * URL of root directory: `http://vcm-9091.vm.duke.edu:5000/`
 
 * You'll need to download mongo db community edition to run the server locally, but otherwise this should work
 
