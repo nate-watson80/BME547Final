@@ -217,10 +217,11 @@ def get_patternDict(data):
         data (dictionary): the data dictionary that contains the 'batch' key
 
     Returns:
-        batch data (dictionary): the query result from the mongodb
+        batch_data (dictionary): the query result from the mongodb
     """
     batch = data['batch']
-    return db.patterns.find_one({"batch": batch})
+    batch_data = db.patterns.find_one({"batch": batch})
+    return batch_data
 
 
 def circlePixelID(circleData):
