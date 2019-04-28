@@ -255,7 +255,7 @@ def circlePixelID(circleData):
     """Identifies all pixels within a circle
 
     Takes one circle centerpoint location and radius and calculates all pixel
-    coords within the radius from that center location
+    coords within the radius from that center location.
 
     Args:
         circleData (list): centerpoint row, centerpoint col, and radius
@@ -283,12 +283,15 @@ def circlePixelID(circleData):
 
 
 def decodeImage(str_encoded_img, color=False):
-    """ Takes an base 64 encoded image and converts it to a image array. Has
+    """Decodes and converts image into image array
+
+    Takes an base 64 encoded image and converts it to a image array. Has
     the option to conserve the original color or just as a greyscale.
 
     Args:
         str_encoded_img (str): base 64 encoded image
-
+        color (bool): flag to indicate whether image is color or grayscale
+                      (by default, B&W)
     Returns:
         orig_img (np.array): numpy array image matrix
     """
