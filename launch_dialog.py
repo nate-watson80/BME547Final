@@ -99,13 +99,15 @@ class LaunchDialog(QtWidgets.QDialog):
         user = self.get_user()
         batch = self.get_batch()
         grp = self.get_grp()
+        location = self.get_location()
 
         # Determine whether there are blank inputs
         status = True
         if (
             user == "" or
             batch == "" or
-            grp == ""
+            grp == "" or
+            location == ""
         ):
             error_message = "Please fill in all entries"
             status = False
