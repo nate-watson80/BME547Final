@@ -3,8 +3,6 @@ import pytest
 import base64
 import cv2
 
-db = fs.db
-
 
 def test_patternMatching():
     # Actual data
