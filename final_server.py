@@ -134,6 +134,7 @@ def imageUpload():
                 "user": in_data["user"],
                 "client": in_data["client"],
                 "filename": in_data["filename"],
+                "location": in_data["location"]
                }
     action = "Image Data Received from Client"
     timestamp_id = log_to_DB(log_data, action)
