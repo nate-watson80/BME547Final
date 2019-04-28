@@ -11,7 +11,7 @@ Welcome to BME547Final's documentation!
    :caption: Contents:
 
    final_server
-   GUI-test
+   GUI_test
    encodedUi
    launch_dialog
 

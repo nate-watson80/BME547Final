@@ -16,7 +16,7 @@
     <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="GUI-test module" href="GUI-test.html" />
+    <link rel="next" title="GUI_test module" href="GUI_test.html" />
     <link rel="prev" title="Welcome to BME547Final’s documentation!" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -41,13 +41,15 @@
 <dl class="function">
 <dt id="final_server.circlePixelID">
 <code class="descclassname">final_server.</code><code class="descname">circlePixelID</code><span class="sig-paren">(</span><em>circleData</em><span class="sig-paren">)</span><a class="headerlink" href="#final_server.circlePixelID" title="Permalink to this definition">¶</a></dt>
-<dd><p>takes one circle location and radius and calculates all pixel coords
-within the radii from that center location</p>
+<dd><p>Identifies all pixels within a circle</p>
+<p>Takes one circle centerpoint location and radius and calculates all pixel
+coords within the radius from that center location</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>circleData</strong> (<em>list</em>) – [row, col, radius]</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>circleData</strong> (<em>list</em>) – centerpoint row, centerpoint col, and radius
+for a circle in pattern</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of all pixel locations within a circle</td>
 </tr>
@@ -136,9 +138,13 @@ bgMask (np array): the masks for the background wihin the image</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>dictionary</em>) – the data dictionary that contains the ‘batch’ key</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the query result from the mongodb</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>dictionary of pattern data for this specific</dt>
+<dd>batch type</dd>
+</dl>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">batch data (dictionary)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">patternDict (dictionary)</td>
 </tr>
 </tbody>
 </table>
@@ -243,7 +249,8 @@ rounded to the nearest 1000 microseconds (nearest 1 millisecond).</p>
 <dl class="function">
 <dt id="final_server.patternMatching">
 <code class="descclassname">final_server.</code><code class="descname">patternMatching</code><span class="sig-paren">(</span><em>encoded_image</em>, <em>patternDict</em><span class="sig-paren">)</span><a class="headerlink" href="#final_server.patternMatching" title="Permalink to this definition">¶</a></dt>
-<dd><p>takes the input image to be processed and the pattern, and finds the
+<dd><p>Performs pattern matching algorithm on uploaded image</p>
+<p>Takes the input image to be processed and the pattern, and finds the
 circles, draws circles on a copy of the original image- on a verification
 image. Then, this program quantifies the brightness of the spot features
 and the background intensity within the pattern (not-spot areas). Spits out
@@ -401,7 +408,9 @@ should be.</p>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">final_server module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="GUI-test.html">GUI-test module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="GUI_test.html">GUI_test module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="encodedUi.html">encodedUi module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="launch_dialog.html">launch_dialog module</a></li>
 </ul>
 
 <div class="relations">
@@ -409,7 +418,7 @@ should be.</p>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="index.html" title="previous chapter">Welcome to BME547Final’s documentation!</a></li>
-      <li>Next: <a href="GUI-test.html" title="next chapter">GUI-test module</a></li>
+      <li>Next: <a href="GUI_test.html" title="next chapter">GUI_test module</a></li>
   </ul></li>
 </ul>
 </div>
