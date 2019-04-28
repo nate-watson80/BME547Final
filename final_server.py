@@ -43,7 +43,7 @@ def init_mongoDB():
     """Initializes the MongoDB
 
     Creates database object (which is stored to a global variable "db")
-    which contains connection info to MongoDB database and MongoDB collection
+    which contains connection info to MongoDB database and MongoDB namespace
     "Detector_Software"
 
     Args:
@@ -72,22 +72,29 @@ def server_on():
         None
 
     Returns:
-        Server status
+        status (string): describes the server's status
+        statusCode (int): HTTP status code
     """
-    return "The server is up! Should be ready to rock and roll", 200
+    statusStr = "The server is up! Should be ready to rock and roll"
+    statusCode = 200
+    return statusStr, statusCode
 
 
 @app.route("/pullAllData", methods=['GET'])
 def pullAllData():
-    """sends all analyzed data back in a json with fileNames and list of list
+    """Pulls all available data from the database
+
+    Sends all analyzed data back in a json with fileNames and list of list
     of all "spots" intensities and backgrounds.
 
     Args:
         db.d4Images (Mongo db collection): Mongo DB collection with processed
-        data
+                                           data
 
     Returns:
-        payload (jsonify(dict)): Processed data return
+        payload (jsonify(dict)): data dictionary with filename, spots, and
+                                 background info
+        statusCode (int): HTTP status code
     """
     pullFileNames = []
     pullSpotData = []
@@ -99,7 +106,8 @@ def pullAllData():
     payload = {"filename": pullFileNames,
                "spots": pullSpotData,
                "background": pullBgData}
-    return jsonify(payload), 200
+    statusCode = 200
+    return jsonify(payload), statusCode
 
 
 @app.route("/imageUpload", methods=['POST'])
@@ -119,7 +127,7 @@ def imageUpload():
 
     Returns:
         matchedData (string): processed image, data, and more
-        errorCode (int): HTTP status code
+        statusCode (int): HTTP status code
     """
     in_data = request.get_json()
     log_data = {
@@ -134,11 +142,13 @@ def imageUpload():
         batch = in_data["batch"]
         errStr = "Batch " + batch + " not recognized contact distributor."
         logging.error(errStr)
-        return jsonify({"error": errStr}), 400
+        statusCode = 400
+        return jsonify({"error": errStr}), statusCode
     servCode, errMsg = validate_image(in_data)
     if errMsg:
         logging.error(errMsg)
-        return jsonify({"error": errMsg}), servCode
+        statusCode = servCode
+        return jsonify({"error": errMsg}), statusCode
     matched_data = patternMatching(in_data['image'], patternDict)
     action = "Image Data Matched"
     timestamp_id = log_to_DB(log_data, action)
@@ -163,19 +173,32 @@ def imageUpload():
     img_id = db.d4Images.insert_one(data)
     action = "Image Uploaded"
     timestamp_id = log_to_DB(log_data, action)
-    return jsonify(matched_data), 200
+    statusCode = 200
+    return jsonify(matched_data), statusCode
 
 
 @app.route("/pullImage/<qFileName>", methods=["GET"])
 def pullImage(qFileName):
+    """Pulls an image for display from the database
+
+    Given an image's filename, looks in the database for the image and
+    returns the image to the client.
+
+    Args:
+        qFileName (string): filename of the image for lookup
+    Returns:
+        payload (jsonify(dict)): dictionary of image information
+    """
     if verifyFileName(qFileName):
         data = db.d4Images.find_one({"filename": qFileName})
         verImage = db.d4MatchedImg.find_one({"_id": data["matched_image"]})
         payload = {"status": "found image",
                    "image": str(verImage["image"])}
-        return jsonify(payload), 200
+        statusCode = 200
+        return jsonify(payload), statusCode
     else:
-        return "missing", 400
+        statusCode = 400
+        return "missing", statusCode
 
 
 def verifyFileName(fileName):
@@ -210,8 +233,11 @@ def log_to_DB(log_data, action):
 
 
 def get_patternDict(data):
-    """ finds the pattern from the batch name input from the client from the
-        MongoDB. Then returns the encoded pattern!
+    """Gets pattern information from the database
+
+    Takes the pattern from the batch name input on the client, searches
+    MongoDB 'patterns' collection for this pattern, and returns a dictionary
+    with information about the pattern for this specific batch type.
 
     Args:
         data (dictionary): the data dictionary that contains the 'batch' key
@@ -229,7 +255,7 @@ def circlePixelID(circleData):
     """Identifies all pixels within a circle
 
     Takes one circle centerpoint location and radius and calculates all pixel
-    coords within the radius from that center location
+    coords within the radius from that center location.
 
     Args:
         circleData (list): centerpoint row, centerpoint col, and radius
@@ -257,12 +283,15 @@ def circlePixelID(circleData):
 
 
 def decodeImage(str_encoded_img, color=False):
-    """ Takes an base 64 encoded image and converts it to a image array. Has
+    """Decodes and converts image string into image array
+
+    Takes an base 64 encoded image and converts it to a image array. Has
     the option to conserve the original color or just as a greyscale.
 
     Args:
-        str_encoded_img (str): base 64 encoded image
-
+        str_encoded_img (str): base 64 encoded image string
+        color (bool): flag to indicate whether image is color or grayscale
+                      (by default, B&W)
     Returns:
         orig_img (np.array): numpy array image matrix
     """
@@ -281,10 +310,12 @@ def decodeImage(str_encoded_img, color=False):
 
 
 def encodeImage(np_img_array):
-    """ Encodes the np.array image matrix into a base 64 encoded string
+    """Encodes an image array into base 64 encoded string
+
+    Encodes the np.array image matrix into a base 64 encoded string.
 
     Args:
-        np_img_array (np.array): just an image array
+        np_img_array (np.array): numpy array image matrix
     Returns:
         str_img_buffer_enc64 (string): base 64 encoded image string
     """
@@ -295,19 +326,20 @@ def encodeImage(np_img_array):
 
 
 def generatePatternMasks(spot_info, shape):
-    """generate pattern from json encoded circle locations
-    and generate masks for spots and bgMask. This is important for efficient
-    quantification of brightness in the spots and background within the image
+    """Creates masks from the pattern for later analysis of image
+
+    Generates pattern from JSON encoded circle locations and generates masks
+    for spots and bgMask. This is important for efficient quantification of
+    brightness in the spots and background within the image.
 
     Args:
         spot_info (list): encoded circle coordinates within the pattern
         shape (list): encoded shape of the pattern, circles are relative to
-                    this
+                      this
     Returns:
         pattern (np array): the pattern to be found within the image
         spotsMask (np array): the masks for the spots within the image
         bgMask (np array): the masks for the background wihin the image
-
     """
     pattern = np.zeros(shape, dtype=np.uint8)
     spotsMask = pattern.copy()
@@ -327,10 +359,11 @@ def generatePatternMasks(spot_info, shape):
 
 
 def templateMatch8b(image, pattern):
-    """ The core template matching algorithm. calculates the correlation
-    between the pattern and the image at all points in 2d sliding window format
-    weighs the correlations higher in the center of the image where the spots
-    should be.
+    """Core template matching algorithm to compare image to pattern
+
+    Calculates the correlation between the pattern and the image at all points
+    in 2d sliding window format weighs the correlations higher in the center of
+    the image where the spots should be.
 
     Args:
         image (np array): the image to be processed
@@ -447,14 +480,19 @@ def patternMatching(encoded_image, patternDict):
 
 
 def validate_image(in_data):
-    """ validates the input data to make sure it's formatted as expected
+    """Validates data received from client
+
+    Validates the input data to make sure it's formatted as expected.
 
     Args:
         in_data (dictionary): the request.json in_Data from the client
     Returns:
-        errorCode, errorStatement (int, Str): server error code and message
+        errorCode (int): server error code
+        errorStatement (str): error message
     """
-    return 200, None
+    errorCode = 200
+    errorStatement = None
+    return errorCode, errorStatement
 
 if __name__ == '__main__':
     main()
