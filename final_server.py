@@ -487,9 +487,12 @@ def validate_image(in_data):
     Args:
         in_data (dictionary): the request.json in_Data from the client
     Returns:
-        errorCode, errorStatement (int, Str): server error code and message
+        errorCode (int): server error code
+        errorStatement (str): error message
     """
-    return 200, None
+    errorCode = 200
+    errorStatement = None
+    return errorCode, errorStatement
 
 if __name__ == '__main__':
     main()
