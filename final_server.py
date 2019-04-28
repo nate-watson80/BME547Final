@@ -480,7 +480,9 @@ def patternMatching(encoded_image, patternDict):
 
 
 def validate_image(in_data):
-    """ validates the input data to make sure it's formatted as expected
+    """Validates data received from client
+
+    Validates the input data to make sure it's formatted as expected.
 
     Args:
         in_data (dictionary): the request.json in_Data from the client
