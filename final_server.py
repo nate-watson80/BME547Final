@@ -43,7 +43,7 @@ def init_mongoDB():
     """Initializes the MongoDB
 
     Creates database object (which is stored to a global variable "db")
-    which contains connection info to MongoDB database and MongoDB collection
+    which contains connection info to MongoDB database and MongoDB namespace
     "Detector_Software"
 
     Args:
@@ -72,14 +72,17 @@ def server_on():
         None
 
     Returns:
-        Server status
+        status (string): describes the server's status
     """
-    return "The server is up! Should be ready to rock and roll", 200
+    statusStr = "The server is up! Should be ready to rock and roll"
+    return statusStr, 200
 
 
 @app.route("/pullAllData", methods=['GET'])
 def pullAllData():
-    """sends all analyzed data back in a json with fileNames and list of list
+    """Pulls all available data from the database
+
+    Sends all analyzed data back in a json with fileNames and list of list
     of all "spots" intensities and backgrounds.
 
     Args:
