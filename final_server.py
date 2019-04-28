@@ -92,7 +92,8 @@ def pullAllData():
                                            data
 
     Returns:
-        payload (jsonify(dict)): Processed data return
+        payload (jsonify(dict)): data dictionary with filename, spots, and
+                                 background info
         statusCode (int): HTTP status code
     """
     pullFileNames = []
@@ -178,6 +179,16 @@ def imageUpload():
 
 @app.route("/pullImage/<qFileName>", methods=["GET"])
 def pullImage(qFileName):
+    """Pulls an image for display from the database
+
+    Given an image's filename, looks in the database for the image and
+    returns the image to the client
+
+    Args:
+        qFileName (string): filename of the image for lookup
+    Returns:
+        payload (jsonify(dict)): dictionary of image information
+    """
     if verifyFileName(qFileName):
         data = db.d4Images.find_one({"filename": qFileName})
         verImage = db.d4MatchedImg.find_one({"_id": data["matched_image"]})
