@@ -64,7 +64,7 @@ def decodeImage(str_encoded_img, color=False):
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
-    def __init__(self, user, batch, img_grp, parent=None):
+    def __init__(self, user, batch, img_grp, location, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
         # self.importact.triggered.connect(self.openImage)
@@ -86,6 +86,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.user = user
         self.batch = batch
         self.img_grp = img_grp
+        self.location = location
 
     def openImage(self):
         newFilePath = QFileDialog.getOpenFileName(self)[0]
@@ -149,12 +150,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             b64_imageBytes = base64.b64encode(image_file.read())
         b64_imgString = str(b64_imageBytes, encoding='utf-8')
         URL = baseURL+"imageUpload"
-        payload = {"client": "GUI-test",
+        payload = {
+                   "client": "GUI-test",
                    "image": b64_imgString,
                    "user": self.user,
                    "img_grp": self.img_grp,
                    "batch": self.batch,
-                   "filename": self.filePath.split('/')[-1]}
+                   "location": self.location,
+                   "filename": self.filePath.split('/')[-1]
+                  }
         response = requests.post(URL, json=payload)
         image_rgb = decodeImage(response.json()['ver_Img'], color=True)
         self.plot_ax.clear()
@@ -190,9 +194,12 @@ def main():
     app.setApplicationName(config.TITLE)
     window = LaunchDialog()
     data = window.get_data()
-    USER, BATCH, IMG_GROUP = data['user'], data['batch'], data['img_grp']
-    if USER and BATCH and IMG_GROUP:
-        frame = MainWindow(USER, BATCH, IMG_GROUP)
+    USER = data['user']
+    BATCH = data['batch']
+    IMG_GROUP = data['img_grp']
+    LOCATION = data['location']
+    if USER and BATCH and IMG_GROUP and LOCATION:
+        frame = MainWindow(USER, BATCH, IMG_GROUP, LOCATION)
         frame.setWindowTitle(config.TITLE)
         frame.show()
         app.exec_()
