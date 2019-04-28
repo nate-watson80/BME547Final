@@ -182,7 +182,7 @@ def pullImage(qFileName):
     """Pulls an image for display from the database
 
     Given an image's filename, looks in the database for the image and
-    returns the image to the client
+    returns the image to the client.
 
     Args:
         qFileName (string): filename of the image for lookup
@@ -233,8 +233,11 @@ def log_to_DB(log_data, action):
 
 
 def get_patternDict(data):
-    """ finds the pattern from the batch name input from the client from the
-        MongoDB. Then returns the encoded pattern!
+    """Gets pattern information from the database
+
+    Takes the pattern from the batch name input on the client, searches
+    MongoDB 'patterns' collection for this pattern, and returns a dictionary
+    with information about the pattern for this specific batch type.
 
     Args:
         data (dictionary): the data dictionary that contains the 'batch' key
