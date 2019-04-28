@@ -35,6 +35,7 @@ class LaunchDialog(QtWidgets.QDialog):
         # Initialize button as off
         self.okPressed = False
 
+        # Add QLine Widgets for text entry
         self.user = QtWidgets.QLabel()
         userEdit = QtWidgets.QLineEdit()
         userEdit.textChanged.connect(self.user_changed)
@@ -47,22 +48,31 @@ class LaunchDialog(QtWidgets.QDialog):
         grpEdit = QtWidgets.QLineEdit()
         grpEdit.textChanged.connect(self.grp_changed)
 
+        self.location = QtWidgets.QLabel()
+        locationEdit = QtWidgets.QLineEdit()
+        locationEdit.textChanged.connect(self.location_changed)
+
         grid = QtWidgets.QGridLayout()
         grid.setSpacing(10)
 
+        # Add the labels to various widgets
         grid.addWidget(QtWidgets.QLabel('Username'), 1, 0)
         grid.addWidget(userEdit, 1, 1)
 
-        grid.addWidget(QtWidgets.QLabel('D4 Batch No.'), 2, 0)
+        grid.addWidget(QtWidgets.QLabel('D4 Batch Number'), 2, 0)
         grid.addWidget(batchEdit, 2, 1)
 
         grid.addWidget(QtWidgets.QLabel('Data Group'), 3, 0)
         grid.addWidget(grpEdit, 3, 1)
 
+        grid.addWidget(QtWidgets.QLabel('Location'), 4, 0)
+        grid.addWidget(locationEdit, 4, 1)
+
+        # Ok button = initialized to off
         okBtn = QtWidgets.QPushButton('Ok', self)
         okBtn.clicked.connect(self.ok_pressed)
 
-        grid.addWidget(okBtn, 4, 2)
+        grid.addWidget(okBtn, 5, 2)
         self.setWindowTitle(config.TITLE)
         self.setLayout(grid)
         self.setGeometry(300, 300, 350, 200)
@@ -104,6 +114,7 @@ class LaunchDialog(QtWidgets.QDialog):
             reply = QtWidgets.QMessageBox.warning(self, 'Message',
                                                   error_message,
                                                   QtWidgets.QMessageBox.Ok)
+        # If all entries are valid move to next window
         else:
             self.okPressed = True
             self.close()
@@ -152,6 +163,21 @@ class LaunchDialog(QtWidgets.QDialog):
 
         """
         self.grp.setText(text)
+
+    def location_changed(self, text):
+        """ Method for handling if the the text has been changed.
+
+        This function is utilized to handle any changes that have
+        occured when uploading the user into the text box.
+
+        Args:
+            text (str) = User string input
+
+        Returns:
+            None
+
+        """
+        self.location.setText(text)
 
     def get_user(self):
         """ Method for returning the user's information that was uploaded.
@@ -244,7 +270,7 @@ class LaunchDialog(QtWidgets.QDialog):
         passing the data back as a dictionary.
 
         Args:
-            parent () =
+            parent (class) = Inheritance if present
 
         Returns:
             output_dict (dict) = Dictionary containing all of the user
