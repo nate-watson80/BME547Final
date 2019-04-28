@@ -338,9 +338,9 @@ def templateMatch8b(image, pattern):
         pattern (np array): the pattern to be found in the image (circles)
     Returns:
         topLeftMatch (list): location of the best fit defined as the top left
-                            coordinate within the image
+                             coordinate within the image
         verImg (np array): copy of the image in color with a rectangle drawn
-                            where the pattern was best fit
+                           where the pattern was best fit
     """
     imageCols, imageRows = image.shape[::-1]
     stdCols, stdRows = pattern.shape[::-1]
