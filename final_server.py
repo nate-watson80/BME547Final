@@ -230,7 +230,8 @@ def circlePixelID(circleData):
     within the radii from that center location
 
     Args:
-        circleData (list): [row, col, radius]
+        circleData (list): centerpoint row, centerpoint col, and radius
+                           for each circle in pattern
     Returns:
         pixelLocations (list): list of all pixel locations within a circle
     """
