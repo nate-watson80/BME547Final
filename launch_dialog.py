@@ -83,8 +83,12 @@ class LaunchDialog(QtWidgets.QDialog):
             None
 
         """
+        # Obtain the user inputs:
+        user = self.get_user()
+        batch = self.get_batch()
+        grp = self.get_grp()
 
-        user, batch, grp = self.get_user(), self.get_user(), self.get_user()
+        # Determine whether there are blank inputs
         err = ""
         if user == "":
             err = "Username cannot be empty"
