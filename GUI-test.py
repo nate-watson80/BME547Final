@@ -65,6 +65,11 @@ def decodeImage(str_encoded_img, color=False):
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, user, batch, img_grp, parent=None):
+        """ Sets up the Main UI Window class and assigns actions
+            to the buttons and GUI elements as originally
+            geometrically assigned and delineated from
+            encodedUI.py
+        """
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
         # self.importact.triggered.connect(self.openImage)
@@ -88,6 +93,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.img_grp = img_grp
 
     def openImage(self):
+        """ Opens a file dialog for users to choose the images they
+            would like to send to the server for saving and processing
+        """
         newFilePath = QFileDialog.getOpenFileName(self)[0]
         if newFilePath == "":
             return
@@ -110,6 +118,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                                                -1))
 
     def queryImage(self):
+        """ Pulls a queried image from the server/DB by filename.
+        """
         URL = baseURL+"pullImage"
         response = requests.get(URL+self.lineEdit.text())
         # print(response.json()["status"])
@@ -125,6 +135,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                                                      -1))
 
     def writeCSVData(self):
+        """ Writes all the available database data to a readable CSV
+            file locally for user interpretation
+        """
         URL = baseURL+"pullAllData"
         response = requests.get(URL)
         outLines = []
@@ -146,6 +159,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                                                      -1))
 
     def uploadImage(self):
+        """ Opens the image file, encodes, and sends over the
+            json payload with all needed information from the GUI.
+            The json payload is sent to the server as defined in
+            the baseURL
+
+        Args:
+            self.filePath (String): the local filepath of the image
+            self.user (String): User defined in the first window
+            self.batch (String): Batch image information
+        """
         with open(self.filePath, "rb") as image_file:
             b64_imageBytes = base64.b64encode(image_file.read())
         b64_imgString = str(b64_imageBytes, encoding='utf-8')
@@ -171,6 +194,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                                                      -1))
 
     def testServer(self):
+        """ Tests that the server is up and running
+        """
         URL = baseURL
         response = requests.get(URL).text
         self.serverResponse.setText(QtWidgets.QApplication.translate("",
