@@ -21,9 +21,10 @@ def test_patternMatching():
     # Expected data
     exp_verImg = cv2.imread("verification-img.tiff")
     exp_verImgStr = fs.encodeImage(exp_verImg)
-    exp_intensities = [48030.58677042802, 46267.2186770428, 42864.66614785992,
-                       43446.404006677796, 44654.580544747085]
-    exp_background = 3928.5359746102604
+    exp_intensities = [47907.341194370485, 45792.48079117535,
+                       42206.216812476225, 43315.96575621688,
+                       44411.17991631799]
+    exp_background = 3860.4447940978507
     exp_matched_data = {
                         "ver_Img": exp_verImgStr,
                         "intensities": exp_intensities,
