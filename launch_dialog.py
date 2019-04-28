@@ -41,8 +41,10 @@ class LaunchDialog(QtWidgets.QDialog):
         userEdit.textChanged.connect(self.user_changed)
 
         self.batch = QtWidgets.QLabel()
-        batchEdit = QtWidgets.QLineEdit()
-        batchEdit.textChanged.connect(self.batch_changed)
+        self.batchEdit = QtWidgets.QComboBox()
+        self.batchEdit.addItem("leptin-1")
+        # Add more batch numbers here when ya'll get them -Nate
+        self.batchEdit.currentIndexChanged.connect(self.batch_changed)
 
         self.grp = QtWidgets.QLabel()
         grpEdit = QtWidgets.QLineEdit()
@@ -60,7 +62,7 @@ class LaunchDialog(QtWidgets.QDialog):
         grid.addWidget(userEdit, 1, 1)
 
         grid.addWidget(QtWidgets.QLabel('D4 Batch Number'), 2, 0)
-        grid.addWidget(batchEdit, 2, 1)
+        grid.addWidget(self.batchEdit, 2, 1)
 
         grid.addWidget(QtWidgets.QLabel('Data Group'), 3, 0)
         grid.addWidget(grpEdit, 3, 1)
@@ -134,20 +136,19 @@ class LaunchDialog(QtWidgets.QDialog):
         """
         self.user.setText(text)
 
-    def batch_changed(self, text):
+    def batch_changed(self):
         """ Method for handling if the the text has been changed.
 
         This function is utilized to handle any changes that have
         occured when uploading the user into the text box.
 
         Args:
-            text () =
 
         Returns:
             None
 
         """
-        self.batch.setText(text)
+        self.batch.currentText()
 
     def grp_changed(self, text):
         """ Method for handling if the the text has been changed.
@@ -209,7 +210,7 @@ class LaunchDialog(QtWidgets.QDialog):
             batch_input (str) = String containg text passed through by user.
 
         """
-        batch_input = self.batch.text()
+        batch_input = self.batchEdit.currentText()
 
         return batch_input
 
@@ -229,6 +230,12 @@ class LaunchDialog(QtWidgets.QDialog):
         grp_input = self.grp.text()
 
         return grp_input
+
+    def get_location(self):
+
+        location_input = self.location.text()
+
+        return location_input
 
     def closeEvent(self, event):
         """ Method for handling events after pressing the exit button
@@ -284,6 +291,8 @@ class LaunchDialog(QtWidgets.QDialog):
                 'user': dialog.get_user(),
                 'batch': dialog.get_batch(),
                 'img_grp': dialog.get_grp(),
+                'location': dialog.get_location(),
                }
+        print(output_dict)
 
         return output_dict
