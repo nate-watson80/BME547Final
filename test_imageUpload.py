@@ -1,8 +1,10 @@
 import final_server as fs
 import pytest
+import base64
 
 
 def test_imageUpload():
+    # Actual
     encoded_image = get_encoded_image_for_testing()
     in_data = {
                "client": "GUI-test",
@@ -10,10 +12,30 @@ def test_imageUpload():
                "user": "testUser",
                "img_grp": "testGroup",
                "batch": "leptin-1",
+               "location": "testlocation",
                "filename": "slide1_0.tiff"
               }
-    matchedData, statusCode = fs.imageUpload()
+    matched_data, statusCode = fs.imageUpload(in_data)
 
+    # Expected
+    exp_encoded_image = get_encoded_image_for_testing()
+    exp_in_data = {
+                   "client": "GUI-test",
+                   "image": exp_encoded_image,
+                   "user": "testUser",
+                   "img_grp": "testGroup",
+                   "batch": "leptin-1",
+                   "location": "testlocation",
+                   "filename": "slide1_0.tiff"
+                  }
+    exp_patternDict = fs.get_patternDict(exp_in_data)
+    exp_matched_data = fs.patternMatching(exp_in_data['image'],
+                                          exp_patternDict)
+    exp_statusCode = 200
+
+    # Actual vs Expected
+    assert matched_data == exp_matched_data
+    assert statusCode == exp_statusCode
 
 
 def get_encoded_image_for_testing():
