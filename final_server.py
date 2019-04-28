@@ -73,9 +73,11 @@ def server_on():
 
     Returns:
         status (string): describes the server's status
+        statusCode (int): HTTP status code
     """
     statusStr = "The server is up! Should be ready to rock and roll"
-    return statusStr, 200
+    statusCode = 200
+    return statusStr, statusCode
 
 
 @app.route("/pullAllData", methods=['GET'])
@@ -87,10 +89,11 @@ def pullAllData():
 
     Args:
         db.d4Images (Mongo db collection): Mongo DB collection with processed
-        data
+                                           data
 
     Returns:
         payload (jsonify(dict)): Processed data return
+        statusCode (int): HTTP status code
     """
     pullFileNames = []
     pullSpotData = []
@@ -102,7 +105,8 @@ def pullAllData():
     payload = {"filename": pullFileNames,
                "spots": pullSpotData,
                "background": pullBgData}
-    return jsonify(payload), 200
+    statusCode = 200
+    return jsonify(payload), statusCode
 
 
 @app.route("/imageUpload", methods=['POST'])
@@ -122,7 +126,7 @@ def imageUpload():
 
     Returns:
         matchedData (string): processed image, data, and more
-        errorCode (int): HTTP status code
+        statusCode (int): HTTP status code
     """
     in_data = request.get_json()
     log_data = {
@@ -137,11 +141,13 @@ def imageUpload():
         batch = in_data["batch"]
         errStr = "Batch " + batch + " not recognized contact distributor."
         logging.error(errStr)
-        return jsonify({"error": errStr}), 400
+        statusCode = 400
+        return jsonify({"error": errStr}), statusCode
     servCode, errMsg = validate_image(in_data)
     if errMsg:
         logging.error(errMsg)
-        return jsonify({"error": errMsg}), servCode
+        statusCode = servCode
+        return jsonify({"error": errMsg}), statusCode
     matched_data = patternMatching(in_data['image'], patternDict)
     action = "Image Data Matched"
     timestamp_id = log_to_DB(log_data, action)
@@ -166,7 +172,8 @@ def imageUpload():
     img_id = db.d4Images.insert_one(data)
     action = "Image Uploaded"
     timestamp_id = log_to_DB(log_data, action)
-    return jsonify(matched_data), 200
+    statusCode = 200
+    return jsonify(matched_data), statusCode
 
 
 @app.route("/pullImage/<qFileName>", methods=["GET"])
@@ -176,9 +183,11 @@ def pullImage(qFileName):
         verImage = db.d4MatchedImg.find_one({"_id": data["matched_image"]})
         payload = {"status": "found image",
                    "image": str(verImage["image"])}
-        return jsonify(payload), 200
+        statusCode = 200
+        return jsonify(payload), statusCode
     else:
-        return "missing", 400
+        statusCode = 400
+        return "missing", statusCode
 
 
 def verifyFileName(fileName):
