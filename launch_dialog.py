@@ -37,8 +37,8 @@ class LaunchDialog(QtWidgets.QDialog):
 
         # Add QLine Widgets for text entry
         self.user = QtWidgets.QLabel()
-        userEdit = QtWidgets.QLineEdit()
-        userEdit.textChanged.connect(self.user_changed)
+        self.userEdit = QtWidgets.QLineEdit()
+        self.userEdit.textChanged.connect(self.user_changed)
 
         self.batch = QtWidgets.QLabel()
         self.batchEdit = QtWidgets.QComboBox()
@@ -47,28 +47,28 @@ class LaunchDialog(QtWidgets.QDialog):
         self.batchEdit.currentIndexChanged.connect(self.batch_changed)
 
         self.grp = QtWidgets.QLabel()
-        grpEdit = QtWidgets.QLineEdit()
-        grpEdit.textChanged.connect(self.grp_changed)
+        self.grpEdit = QtWidgets.QLineEdit()
+        self.grpEdit.textChanged.connect(self.grp_changed)
 
         self.location = QtWidgets.QLabel()
-        locationEdit = QtWidgets.QLineEdit()
-        locationEdit.textChanged.connect(self.location_changed)
+        self.locationEdit = QtWidgets.QLineEdit()
+        self.locationEdit.textChanged.connect(self.location_changed)
 
         grid = QtWidgets.QGridLayout()
         grid.setSpacing(10)
 
         # Add the labels to various widgets
         grid.addWidget(QtWidgets.QLabel('Username'), 1, 0)
-        grid.addWidget(userEdit, 1, 1)
+        grid.addWidget(self.userEdit, 1, 1)
 
         grid.addWidget(QtWidgets.QLabel('D4 Batch Number'), 2, 0)
         grid.addWidget(self.batchEdit, 2, 1)
 
         grid.addWidget(QtWidgets.QLabel('Data Group'), 3, 0)
-        grid.addWidget(grpEdit, 3, 1)
+        grid.addWidget(self.grpEdit, 3, 1)
 
         grid.addWidget(QtWidgets.QLabel('Location'), 4, 0)
-        grid.addWidget(locationEdit, 4, 1)
+        grid.addWidget(self.locationEdit, 4, 1)
 
         # Ok button = initialized to off
         okBtn = QtWidgets.QPushButton('Ok', self)
