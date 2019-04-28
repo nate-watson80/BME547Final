@@ -359,10 +359,11 @@ def generatePatternMasks(spot_info, shape):
 
 
 def templateMatch8b(image, pattern):
-    """ The core template matching algorithm. calculates the correlation
-    between the pattern and the image at all points in 2d sliding window format
-    weighs the correlations higher in the center of the image where the spots
-    should be.
+    """Core template matching algorithm to compare image to pattern
+
+    Calculates the correlation between the pattern and the image at all points
+    in 2d sliding window format weighs the correlations higher in the center of
+    the image where the spots should be.
 
     Args:
         image (np array): the image to be processed
