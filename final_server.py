@@ -226,11 +226,14 @@ def get_patternDict(data):
 
 
 def circlePixelID(circleData):
-    """ takes one circle location and radius and calculates all pixel coords
-    within the radii from that center location
+    """Identifies all pixels within a circle
+
+    Takes one circle centerpoint location and radius and calculates all pixel
+    coords within the radius from that center location
 
     Args:
-        circleData (list): [row, col, radius]
+        circleData (list): centerpoint row, centerpoint col, and radius
+                           for a circle in pattern
     Returns:
         pixelLocations (list): list of all pixel locations within a circle
     """
