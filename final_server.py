@@ -241,14 +241,14 @@ def circlePixelID(circleData):
     yCoordCirc = circleData[1]
     radiusCirc = circleData[2]
     for exesInCircle in range((xCoordCirc - radiusCirc),
-                              (xCoordCirc + radiusCirc)):
+                              (xCoordCirc + radiusCirc + 1)):
         # Calculates the y-coordinates that define the top and bottom bounds
         # of a slice (at x position) of the circle
         whyRange = np.sqrt(
             pow(radiusCirc, 2) - pow((exesInCircle - xCoordCirc), 2))
         discreteWhyRange = int(whyRange)
         for whysInCircle in range((yCoordCirc - discreteWhyRange),
-                                  (yCoordCirc + discreteWhyRange)):
+                                  (yCoordCirc + discreteWhyRange + 1)):
             pixelLocations.append([exesInCircle, whysInCircle])
     return pixelLocations
 
