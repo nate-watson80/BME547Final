@@ -1,9 +1,6 @@
 import final_server as fs
 import pytest
 import base64
-import io
-import cv2
-import numpy as np
 
 
 def test_decodeImage():
