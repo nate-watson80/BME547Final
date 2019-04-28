@@ -29,6 +29,8 @@ def test_patternMatching():
                         "intensities": exp_intensities,
                         "background": exp_background
                        }
+
+    # Testing actual vs expected
     assert matched_data == exp_matched_data
 
 
