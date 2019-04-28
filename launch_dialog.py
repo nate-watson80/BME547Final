@@ -89,15 +89,20 @@ class LaunchDialog(QtWidgets.QDialog):
         grp = self.get_grp()
 
         # Determine whether there are blank inputs
-        err = ""
-        if user == "":
-            err = "Username cannot be empty"
-        if batch == "":
-            err = "Batch No. cannot be empty"
-        if grp == "":
-            err = "Test group cannot be empty"
-        if err != "":
-            reply = QtWidgets.QMessageBox.warning(self, 'Message', err,
+        status = True
+        if (
+            user == "" or
+            batch == "" or
+            grp == ""
+        ):
+            error_message = "Please fill in all entries"
+            status = False
+
+        # Send an alert message:
+        if status == False:
+
+            reply = QtWidgets.QMessageBox.warning(self, 'Message',
+                                                  error_message,
                                                   QtWidgets.QMessageBox.Ok)
         else:
             self.okPressed = True
