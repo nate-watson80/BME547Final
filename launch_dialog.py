@@ -232,6 +232,18 @@ class LaunchDialog(QtWidgets.QDialog):
         return grp_input
 
     def get_location(self):
+        """ Method for returning the user's information that was uploaded.
+
+        This method is used to determine the data that was uploaded by the
+        user in order to save it on the server.
+
+        Args:
+            None
+
+        Returns:
+            location_input (str) = String containg text passed through by user.
+
+        """
 
         location_input = self.location.text()
 

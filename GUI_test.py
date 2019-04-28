@@ -26,7 +26,7 @@ import csv
 from encodedUi import Ui_MainWindow
 from launch_dialog import LaunchDialog
 
-
+# Change based on where server is deployed - Nate
 baseURL = "http://127.0.0.1:5000/"
 # baseURL = "http://vcm-9091.vm.duke.edu:5000/"
 
@@ -43,10 +43,11 @@ def decodeImage(str_encoded_img, color=False):
         str_encoded_img (str) = Encoded image string.
 
         color (bool) = Bool number to determine if file is
-            a color file.
+            a color file. Most images will be grayscale.
 
     Returns:
         orig_img () = Original image after it has been decoded
+
     """
 
     decoded_img = base64.b64decode(str_encoded_img)
@@ -64,10 +65,67 @@ def decodeImage(str_encoded_img, color=False):
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
+    """ This is the UI class for the main GUI window.
+
+    This class is to control the visual layouts of the main UI display.
+    There are several buttons cooresponding to communicating with the server
+    including selecting an image, uploading an image, and exporting data.
+    Additionally, once images are uploaded they are displayed utilizing
+    matplotlib imread() command.
+
+    Args:
+        QMainWindow (class) = PyQt main class inheritance
+
+        Ui_MainWindow (class) = Class from the encodedUi.py file cooresponding
+            to the functionality of all the widgets in window.
+
+    Attributes:
+        readImgButton (class 'PyQt5.QtWidgets.QPushButton') = button
+
+        testServerButton (class 'PyQt5.QtWidgets.QPushButton') = button
+
+        uploadImgButton (class 'PyQt5.QtWidgets.QPushButton') = button
+
+        pullAllData (class 'PyQt5.QtWidgets.QPushButton') = button
+
+        submitQuery (class 'PyQt5.QtWidgets.QPushButton') = button
+
+        plotting_widget (class 'PyQt5.QtWidgets.QWidget') = button
+
+        user (str) = String for the username
+
+        batch (str) = String for the batch number
+
+        img_grp (str) = Image group number
+
+        location (str) = Manual entry of location taken.
+
+    """
     def __init__(self, user, batch, img_grp, location, parent=None):
+        """ Init function for the MainWindow class.
+
+        Set up the atrributes on the UI and connect their functionalities.
+        Note: A lot of their functionalities are already set in the
+        encodedUi.py file.
+
+        Args:
+            user (str) = String for the username
+
+            batch (str) = String for the batch number
+
+            img_grp (str) = Image group number
+
+            location (str) = Manual entry of location taken.
+
+        Returns:
+            None
+
+        """
+        # Inheritance of the MainWindow
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
-        # self.importact.triggered.connect(self.openImage)
+
+        # Connect all of the button from Ui_MainWindow
         self.readImgButton.clicked.connect(self.openImage)
         self.testServerButton.clicked.connect(self.testServer)
         self.uploadImgButton.clicked.connect(self.uploadImage)
@@ -75,14 +133,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.submitQuery.clicked.connect(self.queryImage)
         self.plotting_widget.setLayout(QVBoxLayout())
 
+        # Display the image that has been selected
         self.plotting_matplotlib_canvas = FigureCanvas(figure=Figure())
         self.plotting_widget.layout().addWidget(
                 NavigationToolbar(self.plotting_matplotlib_canvas, self))
-
         self.plotting_widget.layout().addWidget(
                 self.plotting_matplotlib_canvas)
         self.plot_ax = self.plotting_matplotlib_canvas.figure.subplots()
         self.plot_ax.axis('off')
+
+        # Store the data obtained from launch window as attributes
         self.user = user
         self.batch = batch
         self.img_grp = img_grp
