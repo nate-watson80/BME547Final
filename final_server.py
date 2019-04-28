@@ -111,7 +111,24 @@ def pullAllData():
 
 
 @app.route("/imageUpload", methods=['POST'])
-def imageUpload():
+def imageUploadWrapper():
+    """POST wrapper for imageUpload
+
+    Receives POST data, sends data to imageUpload, receives output from
+    imageUpload, and then posts the data.
+
+    Args:
+        POST data: b64 encoded image, batch/pattern name, more
+    Returns:
+        matchedData (jsonify(dict)): processed image, data, and more
+        statusCode (int): HTTP status code
+    """
+    in_data = request.get_json()
+    matched_data, statusCode = imageUpload(in_data)
+    return jsonify(matched_data), statusCode
+
+
+def imageUpload(in_data):
     """Uploads and processes an image
 
     The core function of the server, takes in a base64 encoded image
@@ -123,10 +140,10 @@ def imageUpload():
     the MongoDB and returned to the user.
 
     Args:
-        in_data (json/dictionary): b64 encoded image, batch/pattern name, more
+        in_data (dict): b64 encoded image, batch/pattern name, more
 
     Returns:
-        matchedData (string): processed image, data, and more
+        matchedData (dict): processed image, data, and more
         statusCode (int): HTTP status code
     """
     in_data = request.get_json()
@@ -175,7 +192,7 @@ def imageUpload():
     action = "Image Uploaded"
     timestamp_id = log_to_DB(log_data, action)
     statusCode = 200
-    return jsonify(matched_data), statusCode
+    return matched_data, statusCode
 
 
 @app.route("/pullImage/<qFileName>", methods=["GET"])
