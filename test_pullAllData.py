@@ -1,9 +1,7 @@
 import final_server as fs
 import pytest
-from pymongo import MongoClient
 from flask import Flask, jsonify, request
 
-db = fs.db
 app = Flask(__name__)
 
 
