@@ -283,13 +283,13 @@ def circlePixelID(circleData):
 
 
 def decodeImage(str_encoded_img, color=False):
-    """Decodes and converts image into image array
+    """Decodes and converts image string into image array
 
     Takes an base 64 encoded image and converts it to a image array. Has
     the option to conserve the original color or just as a greyscale.
 
     Args:
-        str_encoded_img (str): base 64 encoded image
+        str_encoded_img (str): base 64 encoded image string
         color (bool): flag to indicate whether image is color or grayscale
                       (by default, B&W)
     Returns:
@@ -310,10 +310,12 @@ def decodeImage(str_encoded_img, color=False):
 
 
 def encodeImage(np_img_array):
-    """ Encodes the np.array image matrix into a base 64 encoded string
+    """Encodes an image array into base 64 encoded string
+
+    Encodes the np.array image matrix into a base 64 encoded string.
 
     Args:
-        np_img_array (np.array): just an image array
+        np_img_array (np.array): numpy array image matrix
     Returns:
         str_img_buffer_enc64 (string): base 64 encoded image string
     """
