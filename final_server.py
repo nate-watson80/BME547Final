@@ -75,7 +75,7 @@ def server_on():
         status (string): describes the server's status
         statusCode (int): HTTP status code
     """
-    statusStr = "The server is up! Should be ready to rock and roll"
+    statusStr = "The server is up! Should be ready to rock and roll."
     statusCode = 200
     return statusStr, statusCode
 
