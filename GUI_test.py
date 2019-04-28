@@ -191,9 +191,10 @@ def main():
     app.setApplicationName(config.TITLE)
     window = LaunchDialog()
     data = window.get_data()
-    USER, BATCH, IMG_GROUP = data['user'], data['batch'], data['img_grp']
-    if USER and BATCH and IMG_GROUP:
-        frame = MainWindow(USER, BATCH, IMG_GROUP)
+    USER, BATCH, IMG_GROUP, LOCATION = data['user'], data['batch'],
+                                       data['img_grp'], data['location']
+    if USER and BATCH and IMG_GROUP and LOCATION:
+        frame = MainWindow(USER, BATCH, IMG_GROUP, LOCATION)
         frame.setWindowTitle(config.TITLE)
         frame.show()
         app.exec_()
