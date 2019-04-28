@@ -326,19 +326,20 @@ def encodeImage(np_img_array):
 
 
 def generatePatternMasks(spot_info, shape):
-    """generate pattern from json encoded circle locations
-    and generate masks for spots and bgMask. This is important for efficient
-    quantification of brightness in the spots and background within the image
+    """Creates masks from the pattern for later analysis of image
+
+    Generates pattern from JSON encoded circle locations and generates masks
+    for spots and bgMask. This is important for efficient quantification of
+    brightness in the spots and background within the image.
 
     Args:
         spot_info (list): encoded circle coordinates within the pattern
         shape (list): encoded shape of the pattern, circles are relative to
-                    this
+                      this
     Returns:
         pattern (np array): the pattern to be found within the image
         spotsMask (np array): the masks for the spots within the image
         bgMask (np array): the masks for the background wihin the image
-
     """
     pattern = np.zeros(shape, dtype=np.uint8)
     spotsMask = pattern.copy()
