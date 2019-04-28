@@ -111,7 +111,7 @@ class LaunchDialog(QtWidgets.QDialog):
             status = False
 
         # Send an alert message:
-        if status == False:
+        if status is False:
 
             reply = QtWidgets.QMessageBox.warning(self, 'Message',
                                                   error_message,
