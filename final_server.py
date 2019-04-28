@@ -230,6 +230,7 @@ def log_to_DB(log_data, action):
     log_data["_id"] = timestamp
     log_data["action"] = action
     timestamp_id = db.Logging.insert_one(log_data).inserted_id
+    logging.info(log_data)
     return timestamp_id
 
 
