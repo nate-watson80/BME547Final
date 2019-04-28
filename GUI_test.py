@@ -125,7 +125,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
 
-        # Connect all of the button from Ui_MainWindow
+        # Connect all of the button from Ui_MainWindow to functions
         self.readImgButton.clicked.connect(self.openImage)
         self.testServerButton.clicked.connect(self.testServer)
         self.uploadImgButton.clicked.connect(self.uploadImage)
@@ -223,6 +223,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                                                      -1))
 
     def writeCSVData(self):
+        """ Function to write the pulled data into a CSV file format.
+
+        This function will respond to the pull all data button in the main
+        window UI. Effectively this function will return all of the data that
+        has been previously stored on the server. The raw data that has been
+        obtained will then be exported to a CSV file.
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        """
         URL = baseURL+"pullAllData"
         response = requests.get(URL)
         outLines = []
@@ -244,10 +258,30 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                                                      -1))
 
     def uploadImage(self):
+        """ Function attached to the upload image button.
+
+        This function is tied to the upload image to server function. The
+        way that this works is via a requests.post command of a payload
+        containing the client, image file, username, group number, batch,
+        location, and filename. The iamge is encoded to utf-8 format prior
+        to sending out. The response that the post request will recieve will
+        be the results of the image including the mean spot intensities as well
+        as the background intensities.
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        """
+        # Encode the image file in base 64:
         with open(self.filePath, "rb") as image_file:
             b64_imageBytes = base64.b64encode(image_file.read())
         b64_imgString = str(b64_imageBytes, encoding='utf-8')
         URL = baseURL+"imageUpload"
+
+        # Create the payload dictionary
         payload = {
                    "client": "GUI-test",
                    "image": b64_imgString,
@@ -257,21 +291,39 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                    "location": self.location,
                    "filename": self.filePath.split('/')[-1]
                   }
+
+        # Send the payload to the server
         response = requests.post(URL, json=payload)
         image_rgb = decodeImage(response.json()['ver_Img'], color=True)
+        # Clear the image
         self.plot_ax.clear()
         self.plot_ax.imshow(image_rgb, interpolation='nearest')
         self.plot_ax.axis('off')
         self.plot_ax.figure.canvas.draw()
 
+        # Display the responses of from the analyzed image files.
         string = "results: " + str(response.json()['intensities']) + "\n" \
             + "background: " + str(response.json()['background'])
+
+        # Clear the textbox:
         self.serverResponse.setText(QtWidgets.QApplication.translate("",
                                                                      string,
                                                                      None,
                                                                      -1))
 
     def testServer(self):
+        """ Function attached to the test the server button
+
+        Simply this function will test to see if the server is up and running.
+        Will display text to verify that the server is up and running.
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        """
         URL = baseURL
         response = requests.get(URL).text
         self.serverResponse.setText(QtWidgets.QApplication.translate("",
@@ -280,28 +332,84 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                                                      -1))
         pass
 
-    # process the image and then send it back
-
 
 def main():
+    """ Main operating script
+
+    main() is the main function that is calling the other procedures and
+    functions. First, it will call the LaunchWindow() class and display and
+    wait for the proper user inputs. Next, it will open the main UI window.
+    In this window, all of the image processing tasks can be completed if
+    necesssary.
+
+    Args:
+        None
+
+    Returns:
+        None
+
+        """
     if not QApplication.instance():
         app = QApplication(sys.argv)
     else:
         app = QApplication.instance()
+
+    # Display the config.py file
     app.setWindowIcon(QtGui.QIcon(config.ICON))
     app.setApplicationName(config.TITLE)
+
+    # Call the launch windows
     window = LaunchDialog()
-    data = window.get_data()
-    USER = data['user']
-    BATCH = data['batch']
-    IMG_GROUP = data['img_grp']
-    LOCATION = data['location']
-    if USER and BATCH and IMG_GROUP and LOCATION:
-        frame = MainWindow(USER, BATCH, IMG_GROUP, LOCATION)
+
+    # Obtain data from launch window
+    user, batch, img_group, location = get_launch_data(window)
+
+    if user and batch and img_group and location:
+        frame = MainWindow(user, batch, img_group, location)
         frame.setWindowTitle(config.TITLE)
         frame.show()
         app.exec_()
-    app.quit()
+    else:
+        app.quit()
+
+
+def get_launch_data(window):
+    """ Function to obtain the data that was entered in launch window
+
+    This function is utilized to obtain the data that was entered by the
+    client in the launch window. This works by going into the window class
+    and running the get_data() method. The data is then parsed from the dict
+    and returned.
+
+        Args:
+            window (class) = LaunchDialog class that was begun in main()
+
+        Returns:
+            user (str) = String containing the username
+
+            batch (str) = String containing the batch name
+
+            img_grp (str) = String containing the image group
+
+            location (str) = String containing location data
+
+    """
+    data = window.get_data()
+    user = data['user']
+    batch = data['batch']
+    img_grp = data['img_grp']
+    location = data['location']
+
+    return user, batch, img_grp, location
 
 if __name__ == '__main__':
+    """ Main driver calling the other procedures
+
+        Args:
+            None
+
+        Returns:
+            None
+
+    """
     main()
