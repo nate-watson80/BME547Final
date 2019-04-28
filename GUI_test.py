@@ -112,7 +112,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def queryImage(self):
         URL = baseURL+"pullImage"
         response = requests.get(URL+self.lineEdit.text())
-        # print(response.json()["status"])
         verImage = decodeImage(response.json()["image"], color=True)
         self.plot_ax.clear()
         self.plot_ax.imshow(verImage, interpolation='nearest')
