@@ -211,16 +211,24 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         URL = baseURL+"pullImage/"
         response = requests.get(URL+self.lineEdit.text())
-        verImage = decodeImage(response.json()["image"], color=True)
-        self.plot_ax.clear()
-        self.plot_ax.imshow(verImage, interpolation='nearest')
-        self.plot_ax.axis('off')
-        self.plot_ax.figure.canvas.draw()
-        string = "Showing queried file from server: " + self.lineEdit.text()
-        self.serverResponse.setText(QtWidgets.QApplication.translate("",
-                                                                     string,
-                                                                     None,
-                                                                     -1))
+
+        if response.json()["success"] is False:
+            string = response.json()["status"]
+            self.serverResponse.setText(QtWidgets.QApplication.translate("",
+                                                                         string,
+                                                                         None,
+                                                                         -1))
+        else:
+            verImage = decodeImage(response.json()["image"], color=True)
+            self.plot_ax.clear()
+            self.plot_ax.imshow(verImage, interpolation='nearest')
+            self.plot_ax.axis('off')
+            self.plot_ax.figure.canvas.draw()
+            string = response.json()["status"]
+            self.serverResponse.setText(QtWidgets.QApplication.translate("",
+                                                                         string,
+                                                                         None,
+                                                                         -1))
 
     def writeCSVData(self):
         """ Function to write the pulled data into a CSV file format.
