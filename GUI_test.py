@@ -302,7 +302,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.plot_ax.axis('off')
         self.plot_ax.figure.canvas.draw()
 
-
+        # Determine size of image
         size = self.determine_image_size(image_rgb)
         # Display the responses of from the analyzed image files.
         string = "results: " + str(response.json()['intensities']) + "\n" \
