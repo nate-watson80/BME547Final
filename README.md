@@ -1,6 +1,6 @@
 # D4 Detector Software
 ### BME 547: Medical Software Design
-### Final Version is tagged as `v1.0.0`
+### Final Version is tagged as [v1.0.0](https://github.com/nate-watson80/BME547Final/releases/tag/v1.0.0)
 ### Jason Liu, Nate Watson, Jason Cooper
 
 
@@ -12,14 +12,14 @@
 
 [![Python 3.6](https://img.shields.io/badge/python-3.6-blue.svg)](https://www.python.org/downloads/release/python-360/)
 
-* GRADING NOTE: As we discussed in class, Nate's computer did not interface well
+* **GRADING NOTE:** As we discussed in class, Nate's computer did not interface well
 with the computer vision package. I have been using the Hudson machines to work
 on this project. For some reason, all of my commits are not coming in as from my
 GitHub. So when looking under collaborators it will say that I have only made
 one commit. If you look at the full list of commits you will see my commits as
 "Nate Watson", however, not linked to my GitHub. Thanks.
 
-* NOTE: We are purposely only allowing the client to upload one .tiff file at
+* **NOTE:** We are purposely only allowing the client to upload one .tiff file at
 a time. The reason that this is important for this application is that each
 file needs to be specifically matched with the proper patient information for
 the purpose of tracking their diagnosis. In order to do this, it makes sense to
@@ -31,10 +31,8 @@ our users to this file format for consistent analytical results between trials.
 ## Documentation:
 
 * Sphinx generated documentation:
-
-Open the html located on the following path in repository:
-
-* `BME547Final/docs/_build/html/index.html`
+  * Open the HTML file located on the following path in repo: `BME547Final/docs/_build/html/index.html`
+  * Or download the [HTML file](https://github.com/nate-watson80/BME547Final/blob/master/docs/_build/html/index.html) and open it in a web browser.
 
 
 ## Contents of Project
@@ -70,17 +68,14 @@ building the project. pip is utilized as a package manager for this project.
 ## Instructions to Run:
 
 * Begin a virtual environment and install dependencies:
-
-`$ pip install -r requirements.txt`
+  * `$ pip install -r requirements.txt`
 
 * First it is necessary to deploy the server file. If the server is to run
 locally, run the following command in the base directory:
-
-`$ python final_server.py`
+  * `$ python final_server.py`
 
 * If server has been deployed to Duke University virtual machine it has the
 following information associated with it:
-
   * Hostname: `vcm-9091.vm.duke.edu`
   * Port: `5000`
   * Operating System: `Ubuntu18 Server`
@@ -131,6 +126,7 @@ various windows of the program as such:
     - "Pull Data to outputData.csv": Pull all of the data to a local
     csv file.
 
+**IMPORTANT NOTE: Depending on the client OS that the GUI is run on, you may not see information from the server appear on the GUI right away. You may need to switch to another window (out of the GUI) and back to the GUI.**
 
 ## Server Overview and Functionality:
 
@@ -185,6 +181,8 @@ along with the image their processed image.
 scan. Patterns contains the information on where to expect to find the spots
 for this particular batch as well as the where to obtain the background noise
 from the samples.
+
+**IMPORTANT NOTE: While the MongoDB Atlas database has a decent amount of storage (~500 MB) this can fill up quickly with large images, and needs to be periodically cleared. If the program isn't working while you're testing it, please contact the authors and we can clear up space in the database.**
 
 
 ## License:

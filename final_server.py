@@ -151,6 +151,11 @@ def imageUpload(in_data):
         statusCode (int): HTTP status code
 
     """
+    servCode, errMsg = validate_image(in_data)
+    if errMsg:
+        logging.error(errMsg)
+        statusCode = servCode
+        return {"error": errMsg}, statusCode
     log_data = {
                 "user": in_data["user"],
                 "client": in_data["client"],
@@ -166,11 +171,6 @@ def imageUpload(in_data):
         logging.error(errStr)
         statusCode = 400
         return {"error": errStr}, statusCode
-    servCode, errMsg = validate_image(in_data)
-    if errMsg:
-        logging.error(errMsg)
-        statusCode = servCode
-        return {"error": errMsg}, statusCode
     matched_data = patternMatching(in_data['image'], patternDict)
     action = "Image Data Matched"
     timestamp_id = log_to_DB(log_data, action)
@@ -561,13 +561,29 @@ def validate_image(in_data):
 
     Returns:
         errorCode (int): server error code
-
         errorStatement (str): error message
-
     """
     errorCode = 200
     errorStatement = None
+    try:
+        in_data["client"]
+        in_data["image"]
+        in_data["user"]
+        in_data["img_grp"]
+        in_data["batch"]
+        in_data["location"]
+        in_data["filename"]
+    except KeyError:
+        errorCode = 400
+        errorStatement = "Missing data from client."
+        return errorCode, errorStatement
+    for key in in_data:
+        value = in_data[key]
+        if type(value) != str:
+            errorCode = 406
+            errorStatement = "Bad (non-string) data from client."
     return errorCode, errorStatement
+
 
 if __name__ == '__main__':
     main()

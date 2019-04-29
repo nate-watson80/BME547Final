@@ -13,6 +13,7 @@ def test_patternMatching():
             "user": "testUser",
             "img_grp": "testGroup",
             "batch": "leptin-1",
+            "location": "testLocation",
             "filename": "testFilename"
            }
     patternDict = fs.get_patternDict(data)
