@@ -297,8 +297,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Send the payload to the server
         response = requests.post(URL, json=payload)
-        if response.ok is False:
+        if response.status_code == 400:
             string = "Missing data from client."
+            self.serverResponse.setText(
+                QtWidgets.QApplication.translate("", string, None, -1))
+            return
+        if response.status_code == 406:
+            string = "Bad (non-string) data from client."
             self.serverResponse.setText(
                 QtWidgets.QApplication.translate("", string, None, -1))
             return
