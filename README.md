@@ -63,12 +63,12 @@ building the project. pip is utilized as a package manager for this project.
 
 * Begin a virtual environment and install dependencies:
 
-      `$ pip install -r requirements.txt`
+`$ pip install -r requirements.txt`
 
 * First it is necessary to deploy the server file. If the server is to run
 locally, run the following command in the base directory:
 
-    `$ python final_server.py`
+`$ python final_server.py`
 
 * If server has been deployed to Duke University virtual machine it has the
 following information associated with it:
@@ -83,16 +83,16 @@ remotely.
 
 *  To run this application run the file: `GUI_test.py`
 
-      `$ python GUI_test.py`
+`$ python GUI_test.py`
 
 
 ## GUI Overview and Functionality:
 
 * GUI functionality has been distributed into three main python files:
 
-      * `launch_dialog.py`
-      * `encodedUI.py`
-      * `GUI_test.py`
+  * `launch_dialog.py`
+  * `encodedUI.py`
+  * `GUI_test.py`
 
 * `GUI_test.py` functions as the main driver and functions as the "controller"
 for the user interface. `GUI_test.main()` is the module that goes through the
