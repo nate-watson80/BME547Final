@@ -575,13 +575,13 @@ def validate_image(in_data):
         in_data["filename"]
     except KeyError:
         errorCode = 400
-        errorStatement = "Missing information from client."
+        errorStatement = "Missing data from client."
         return errorCode, errorStatement
     for key in in_data:
         value = in_data[key]
         if type(value) != str:
-            errorCode = 400
-            errorStatement = "Client sent non-string information."
+            errorCode = 406
+            errorStatement = "Bad (non-string) data from client."
     return errorCode, errorStatement
 
 
