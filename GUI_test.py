@@ -212,7 +212,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         URL = baseURL+"pullImage/"
         response = requests.get(URL+self.lineEdit.text())
 
-        if response.json()["success"] is False:
+        if response.ok is False:
             string = response.json()["status"]
             self.serverResponse.setText(QtWidgets.QApplication.translate("",
                                                                          string,
