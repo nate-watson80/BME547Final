@@ -297,6 +297,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Send the payload to the server
         response = requests.post(URL, json=payload)
+        if response.ok is False:
+            string = "Missing data from client."
+            self.serverResponse.setText(
+                QtWidgets.QApplication.translate("", string, None, -1))
+            return
         image_rgb = decodeImage(response.json()['ver_Img'], color=True)
 
         # Display returned image
