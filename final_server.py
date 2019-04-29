@@ -151,6 +151,11 @@ def imageUpload(in_data):
         statusCode (int): HTTP status code
 
     """
+    servCode, errMsg = validate_image(in_data)
+    if errMsg:
+        logging.error(errMsg)
+        statusCode = servCode
+        return {"error": errMsg}, statusCode
     log_data = {
                 "user": in_data["user"],
                 "client": in_data["client"],
@@ -166,11 +171,6 @@ def imageUpload(in_data):
         logging.error(errStr)
         statusCode = 400
         return {"error": errStr}, statusCode
-    servCode, errMsg = validate_image(in_data)
-    if errMsg:
-        logging.error(errMsg)
-        statusCode = servCode
-        return {"error": errMsg}, statusCode
     matched_data = patternMatching(in_data['image'], patternDict)
     action = "Image Data Matched"
     timestamp_id = log_to_DB(log_data, action)
