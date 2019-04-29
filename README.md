@@ -13,7 +13,7 @@
 [![Python 3.6](https://img.shields.io/badge/python-3.6-blue.svg)](https://www.python.org/downloads/release/python-360/)
 
 * GRADING NOTE: As we discussed in class, Nate's computer did not interface well
-with the computer vision package. I have been using the Hudson machine to work
+with the computer vision package. I have been using the Hudson machines to work
 on this project. For some reason, all of my commits are not coming in as from my
 GitHub. So when looking under collaborators it will say that I have only made
 one commit. If you look at the full list of commits you will see my commits as
@@ -26,7 +26,7 @@ one commit. If you look at the full list of commits you will see my commits as
 
 Open the html located on the following path in repository:
 
-    * `BME547Final/docs/_build/html/index.html`
+* `BME547Final/docs/_build/html/index.html`
 
 
 ## Contents of Project
@@ -98,30 +98,30 @@ remotely.
 for the user interface. `GUI_test.main()` is the module that goes through the
 various windows of the program as such:
 
-      * First, the launch window is deployed (contained in the file
-        `launch_dialog.py`). Launch window prompts the user to enter their
-        username, the D4 batch number, the data group, and the location that
-        the sample was obtained.
+  * First, the launch window is deployed (contained in the file
+  `launch_dialog.py`). Launch window prompts the user to enter their
+  username, the D4 batch number, the data group, and the location that
+  the sample was obtained.
 
-      * Next, the user presses "ok" and if all fields have inputs, the window
-        changed to the main functional window (contained in the files:
-        `encodedUI.py` and `GUI_test.py`). This window contains five main
-        buttons for image processes tasks.
+  * Next, the user presses "ok" and if all fields have inputs, the window
+  changed to the main functional window (contained in the files:
+  `encodedUI.py` and `GUI_test.py`). This window contains five main
+  buttons for image processes tasks.
 
-              - "Open Image": Import a .tiff file into the application.
+    - "Open Image": Import a .tiff file into the application.
 
-              - "Upload Image to Server": Send image to server. Server will
-              respond with spots identified, their mean intensities, the
-              background noise associated with the signal, and the dimensions
-              of the pixel image.
+    - "Upload Image to Server": Send image to server. Server will
+    respond with spots identified, their mean intensities, the
+    background noise associated with the signal, and the dimensions
+    of the pixel image.
 
-              - "View entered filename from server": Command to find an image
-              that has been stored on the server.
+    - "View entered filename from server": Command to find an image
+    that has been stored on the server.
 
-              - "Test Server!": Test to see if the server is functional.
+    - "Test Server!": Test to see if the server is functional.
 
-              - "Pull Data to outputData.csv": Pull all of the data to a local
-              csv file.
+    - "Pull Data to outputData.csv": Pull all of the data to a local
+    csv file.
 
 
 ## Server Overview and Functionality:
@@ -146,7 +146,7 @@ program.
 
 ## Database Overview and Functionality:
 
-* 
+*
 
 
 ## License:
