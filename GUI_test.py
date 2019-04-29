@@ -209,7 +209,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             None
 
         """
-        URL = baseURL+"pullImage"
+        URL = baseURL+"pullImage/"
         response = requests.get(URL+self.lineEdit.text())
         verImage = decodeImage(response.json()["image"], color=True)
         self.plot_ax.clear()
