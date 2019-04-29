@@ -134,6 +134,14 @@ request is a JSON file containing the filename, individual spot intensities,
 and the background signal.
 
 * `POST /imageUpload`: This route is used to upload image files onto the server.
+The server in return will run spot finding algorithms, analyze each spot, and
+calculate the background intensities of the image. This will be returned to the
+client in a JSON payload containing the processed image as well as these
+calculations.
+
+* `GET /pullImage/<qFileName>`: This route is utilized in order to pull
+specific images from the MongoDB database and return it back to the client
+program.
 
 
 ## Database Overview and Functionality:
