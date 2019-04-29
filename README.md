@@ -31,10 +31,8 @@ our users to this file format for consistent analytical results between trials.
 ## Documentation:
 
 * Sphinx generated documentation:
-
-Open the html located on the following path in repository:
-
-* `BME547Final/docs/_build/html/index.html`
+  * Open the HTML file located on the following path in repo: `BME547Final/docs/_build/html/index.html`
+  * Or download the [HTML file](https://github.com/nate-watson80/BME547Final/blob/master/docs/_build/html/index.html) and open it in a web browser.
 
 
 ## Contents of Project
