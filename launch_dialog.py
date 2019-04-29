@@ -130,7 +130,7 @@ class LaunchDialog(QtWidgets.QDialog):
         occured when uploading the user into the text box.
 
         Args:
-            text () =
+            text (str) = User string input
 
         Returns:
             None
@@ -159,7 +159,7 @@ class LaunchDialog(QtWidgets.QDialog):
         occured when uploading the user into the text box.
 
         Args:
-            text () =
+            text (str) = User string input
 
         Returns:
             None
@@ -261,7 +261,6 @@ class LaunchDialog(QtWidgets.QDialog):
         to blanks and closed down.
 
         Args:
-            event () =
 
         Returns:
             None

@@ -213,9 +213,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         response = requests.get(URL+self.lineEdit.text())
 
         if response.json()["success"] is False:
-            string = response.json()["status"]
+            out = response.json()["status"]
             self.serverResponse.setText(QtWidgets.QApplication.translate("",
-                                                                         string,
+                                                                         out,
                                                                          None,
                                                                          -1))
         else:
@@ -224,9 +224,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.plot_ax.imshow(verImage, interpolation='nearest')
             self.plot_ax.axis('off')
             self.plot_ax.figure.canvas.draw()
-            string = response.json()["status"]
+            out = response.json()["status"]
             self.serverResponse.setText(QtWidgets.QApplication.translate("",
-                                                                         string,
+                                                                         out,
                                                                          None,
                                                                          -1))
 
