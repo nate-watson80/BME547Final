@@ -303,7 +303,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.plot_ax.figure.canvas.draw()
 
 
-        size = determine_image_size(image_rgb)
+        size = self.determine_image_size(image_rgb)
         # Display the responses of from the analyzed image files.
         string = "results: " + str(response.json()['intensities']) + "\n" \
             + "background: " + str(response.json()['background']) + "\n" \
@@ -315,7 +315,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                                                      None,
                                                                      -1))
 
-    def determine_image_size(image_rgb):
+    def determine_image_size(self, image_rgb):
         """ Function to determine the size of the selected image
 
         This function determine the size of the image that was selected to
