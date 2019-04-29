@@ -19,6 +19,14 @@ GitHub. So when looking under collaborators it will say that I have only made
 one commit. If you look at the full list of commits you will see my commits as
 "Nate Watson", however, not linked to my GitHub. Thanks.
 
+* NOTE: We are purposely only allowing the client to upload one .tiff file at
+a time. The reason that this is important for this application is that each
+file needs to be specifically matched with the proper patient information for
+the purpose of tracking their diagnosis. In order to do this, it makes sense to
+only allow for the analysis of one sample at a time (after it has been
+processed by the detector). In addition, images obtained from our portable
+fluorescent detector are always .tiff files and we are purposefully restricting
+our users to this file format for consistent analytical results between trials.
 
 ## Documentation:
 
@@ -146,7 +154,37 @@ program.
 
 ## Database Overview and Functionality:
 
-*
+Our database is broken down into five different MongoDB collections of data to
+appropriately handle the large data files (~MB) that we are passing through.
+The databases store both the original image as well as the processed image
+containing the location of the microarray spots. In order to match each database
+together unique identification numbers are used and stored in d4Images to match
+an individual patient with their images.
+
+* `Logging`: This collection is utilized as a standard logging tool for
+all actions that occur on the server end. Along with the action that has been
+performed by the server, the relevant information is also stored with it
+including: the user, client, filename, and location.
+
+* `d4Images`: This collection contains all of the patient information that
+has been uploaded to the server. Of which includes: username, calculated spot
+intensities, background signal, batch type, and test group. In this database,
+the images themselves are NOT stored due to limitations on space. As such
+unique identification numbers are stored in its place to link that patient with
+the corresponding image in another collection.
+
+* `d4MatchedImg`: This database is utilized to store the fully processed images
+that have been uploaded to the server. Each entry contains the patient's unique
+id number along with the image their processed image.
+
+* `d4OrigImg`: This database is utilized to store the original image that was
+uploaded to the server. Each entry contains the patient's unique id number
+along with the image their processed image.
+
+* `patterns`: This database contains the "patterns" expected for this typical
+scan. Patterns contains the information on where to expect to find the spots
+for this particular batch as well as the where to obtain the background noise
+from the samples.
 
 
 ## License:

@@ -25,7 +25,7 @@ app = Flask(__name__)
 
 
 def main():
-    """Main code for module
+    """ Main code for module
 
     Creates a logging file and kicks off flask web server
 
@@ -34,13 +34,14 @@ def main():
 
     Return:
         None
+
     """
     logging.basicConfig(filename="logfile.log", level=logging.INFO)
     app.run(host="0.0.0.0")
 
 
 def init_mongoDB():
-    """Initializes the MongoDB
+    """ Initializes the MongoDB
 
     Creates database object (which is stored to a global variable "db")
     which contains connection info to MongoDB database and MongoDB namespace
@@ -51,6 +52,7 @@ def init_mongoDB():
 
     Returns:
         db (database object): MongoDB database
+
     """
     connString = "mongodb+srv://bme547:.9w-UVfWaMDCsuL"
     connString = connString + "@bme547-rrjis.mongodb.net/test?retryWrites=true"
@@ -64,7 +66,7 @@ db = init_mongoDB()  # use a global variable for database object
 
 @app.route("/", methods=['GET'])
 def server_on():
-    """Basic Check to see that the server is up
+    """ Basic Check to see that the server is up
 
     Returns the server status.
 
@@ -74,6 +76,7 @@ def server_on():
     Returns:
         status (string): describes the server's status
         statusCode (int): HTTP status code
+
     """
     statusStr = "The server is up! Should be ready to rock and roll."
     statusCode = 200
@@ -82,7 +85,7 @@ def server_on():
 
 @app.route("/pullAllData", methods=['GET'])
 def pullAllData():
-    """Pulls all available data from the database
+    """ Pulls all available data from the database
 
     Sends all analyzed data back in a json with fileNames and list of list
     of all "spots" intensities and backgrounds.
@@ -95,6 +98,7 @@ def pullAllData():
         payload (jsonify(dict)): data dictionary with filename, spots, and
                                  background info
         statusCode (int): HTTP status code
+
     """
     pullFileNames = []
     pullSpotData = []
@@ -112,7 +116,7 @@ def pullAllData():
 
 @app.route("/imageUpload", methods=['POST'])
 def imageUploadWrapper():
-    """POST wrapper for imageUpload
+    """ POST wrapper for imageUpload
 
     Receives POST data, sends data to imageUpload, receives output from
     imageUpload, and then posts the data.
@@ -129,7 +133,7 @@ def imageUploadWrapper():
 
 
 def imageUpload(in_data):
-    """Uploads and processes an image
+    """ Uploads and processes an image
 
     The core function of the server, takes in a base64 encoded image
     and other associated data with it (which pattern to match to the image,
@@ -145,6 +149,7 @@ def imageUpload(in_data):
     Returns:
         matched_data (dict): processed image, data, and more
         statusCode (int): HTTP status code
+
     """
     log_data = {
                 "user": in_data["user"],
@@ -196,13 +201,14 @@ def imageUpload(in_data):
 
 @app.route("/pullImage/<qFileName>", methods=["GET"])
 def pullImage(qFileName):
-    """Pulls an image for display from the database
+    """ Pulls an image for display from the database
 
     Given an image's filename, looks in the database for the image and
     returns the image to the client.
 
     Args:
         qFileName (string): filename of the image for lookup
+
     Returns:
         payload (jsonify(dict)): dictionary of image information
         statusCode (int): HTTP status code
@@ -220,7 +226,27 @@ def pullImage(qFileName):
 
 
 def verifyFileName(qFileName):
+    """ Verify that file requested exists.
+
+    This function is reserved as a validation function to determine if the
+    user has provided a filename that exists in the database. If the file
+    exists the program proceeds normally, if not it is terminated.
+
+    Args:
+        qFileName (string): filename of the image for lookup
+
+    Returns:
+        file_exists (bool) = Boolean cooresponding to whether or not
+            the file is in the database
+
+        msg (str) = Outcome message whether verification was successful.
+
+        data (database) = Raw data obtained from database
+
+    """
     data = db.d4Images.find_one({"filename": qFileName})
+
+    # Determine if the file is present:
     if data is None:
         file_exists = False
         msg = "Filename "+qFileName+" could not be found."
@@ -229,11 +255,12 @@ def verifyFileName(qFileName):
         file_exists = True
         msg = "Filename "+qFileName+" is displayed above."
         logging.info("pullImage: "+msg)
+
     return file_exists, msg, data
 
 
 def log_to_DB(log_data, action):
-    """Creates log entries to MongoDB Cloud Database
+    """ Creates log entries to MongoDB Cloud Database
 
     Adds to "Logging" collection on MongoDB for various actions performed
     by the client. Currently includes actions for:
@@ -250,6 +277,7 @@ def log_to_DB(log_data, action):
 
     Returns:
         timestamp_id (string): this log entry's primary key value
+
     """
     timestamp = datetime.utcnow()
     timestamp = timestamp.replace(microsecond=round(timestamp.microsecond, -3))
@@ -261,7 +289,7 @@ def log_to_DB(log_data, action):
 
 
 def get_patternDict(data):
-    """Gets pattern information from the database
+    """ Gets pattern information from the database
 
     Takes the pattern from the batch name input on the client, searches
     MongoDB 'patterns' collection for this pattern, and returns a dictionary
@@ -273,6 +301,7 @@ def get_patternDict(data):
     Returns:
         patternDict (dictionary): dictionary of pattern data for this specific
                                   batch type
+
     """
     batch = data['batch']
     patternDict = db.patterns.find_one({"batch": batch})
@@ -287,9 +316,11 @@ def circlePixelID(circleData):
 
     Args:
         circleData (list): centerpoint row, centerpoint col, and radius
-                           for a circle in pattern
+            for a circle in pattern
+
     Returns:
         pixelLocations (list): list of all pixel locations within a circle
+
     """
     pixelLocations = []
     # separates the x and y coordinates of the center of the circles and the
@@ -318,10 +349,12 @@ def decodeImage(str_encoded_img, color=False):
 
     Args:
         str_encoded_img (str): base 64 encoded image string
+
         color (bool): flag to indicate whether image is color or grayscale
-                      (by default, B&W)
+            (by default, B&W)
     Returns:
         orig_img (np.array): numpy array image matrix
+
     """
     decoded_img = base64.b64decode(str_encoded_img)
     buf_img = io.BytesIO(decoded_img)
@@ -338,7 +371,7 @@ def decodeImage(str_encoded_img, color=False):
 
 
 def encodeImage(np_img_array):
-    """Encodes an image array into base 64 encoded string
+    """ Encodes an image array into base 64 encoded string
 
     Encodes the np.array image matrix into a base 64 encoded string.
 
@@ -362,12 +395,16 @@ def generatePatternMasks(spot_info, shape):
 
     Args:
         spot_info (list): encoded circle coordinates within the pattern
+
         shape (list): encoded shape of the pattern, circles are relative to
-                      this
+            this.
     Returns:
         pattern (np array): the pattern to be found within the image
+
         spotsMask (np array): the masks for the spots within the image
+
         bgMask (np array): the masks for the background wihin the image
+
     """
     pattern = np.zeros(shape, dtype=np.uint8)
     spotsMask = pattern.copy()
@@ -387,7 +424,7 @@ def generatePatternMasks(spot_info, shape):
 
 
 def templateMatch8b(image, pattern):
-    """Core template matching algorithm to compare image to pattern
+    """ Core template matching algorithm to compare image to pattern
 
     Calculates the correlation between the pattern and the image at all points
     in 2d sliding window format weighs the correlations higher in the center of
@@ -395,12 +432,16 @@ def templateMatch8b(image, pattern):
 
     Args:
         image (np array): the image to be processed
+
         pattern (np array): the pattern to be found in the image (circles)
+
     Returns:
         topLeftMatch (list): location of the best fit defined as the top left
-                            coordinate within the image
+            coordinate within the image
+
         verImg (np array): copy of the image in color with a rectangle drawn
-                            where the pattern was best fit
+            where the pattern was best fit
+
     """
     imageCols, imageRows = image.shape[::-1]
     stdCols, stdRows = pattern.shape[::-1]
@@ -447,7 +488,7 @@ def templateMatch8b(image, pattern):
 
 
 def patternMatching(encoded_image, patternDict):
-    """Performs pattern matching algorithm on uploaded image
+    """ Performs pattern matching algorithm on uploaded image
 
     Takes the input image to be processed and the pattern, and finds the
     circles, draws circles on a copy of the original image- on a verification
@@ -458,10 +499,13 @@ def patternMatching(encoded_image, patternDict):
 
     Args:
         encoded_image (str): base64 encoded image to be processed
+
         patternDict (dictionary): dictionary with encoded pattern
+
     Returns:
         payload (dictionary): contains verification image and the brightnesses
-                              of the spots and of the background
+            of the spots and of the background
+
     """
     rawImg16b = decodeImage(encoded_image)
     pattern, spotMask, bgMask = generatePatternMasks(patternDict['spot_info'],
@@ -508,15 +552,18 @@ def patternMatching(encoded_image, patternDict):
 
 
 def validate_image(in_data):
-    """Validates data received from client
+    """ Validates data received from client
 
     Validates the input data to make sure it's formatted as expected.
 
     Args:
         in_data (dictionary): the request.json in_Data from the client
+
     Returns:
         errorCode (int): server error code
+
         errorStatement (str): error message
+
     """
     errorCode = 200
     errorStatement = None

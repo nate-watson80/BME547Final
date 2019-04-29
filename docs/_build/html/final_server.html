@@ -119,13 +119,14 @@ brightness in the spots and background within the image.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>spot_info</strong> (<em>list</em>) – encoded circle coordinates within the pattern</li>
 <li><strong>shape</strong> (<em>list</em>) – encoded shape of the pattern, circles are relative to
-this</li>
+this.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the pattern to be found within the image
-spotsMask (np array): the masks for the spots within the image
-bgMask (np array): the masks for the background wihin the image</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>the pattern to be found within the image</p>
+<p>spotsMask (np array): the masks for the spots within the image</p>
+<p>bgMask (np array): the masks for the background wihin the image</p>
+</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pattern (np array)</p>
@@ -424,8 +425,8 @@ the image where the spots should be.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>in_data</strong> (<em>dictionary</em>) – the request.json in_Data from the client</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">server error code
-errorStatement (str): error message</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">server error code<p>errorStatement (str): error message</p>
+</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">errorCode (int)</td>
 </tr>
@@ -435,8 +436,28 @@ errorStatement (str): error message</td>
 
 <dl class="function">
 <dt id="final_server.verifyFileName">
-<code class="descclassname">final_server.</code><code class="descname">verifyFileName</code><span class="sig-paren">(</span><em>fileName</em><span class="sig-paren">)</span><a class="headerlink" href="#final_server.verifyFileName" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">final_server.</code><code class="descname">verifyFileName</code><span class="sig-paren">(</span><em>qFileName</em><span class="sig-paren">)</span><a class="headerlink" href="#final_server.verifyFileName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Verify that file requested exists.</p>
+<p>This function is reserved as a validation function to determine if the
+user has provided a filename that exists in the database. If the file
+exists the program proceeds normally, if not it is terminated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>qFileName</strong> (<em>string</em>) – filename of the image for lookup</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>file_exists (bool) = Boolean cooresponding to whether or not</dt>
+<dd>the file is in the database</dd>
+</dl>
+<p>msg (str) = Outcome message whether verification was successful.</p>
+<p>data (database) = Raw data obtained from database</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 
