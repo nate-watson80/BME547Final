@@ -561,12 +561,21 @@ def validate_image(in_data):
 
     Returns:
         errorCode (int): server error code
-
         errorStatement (str): error message
-
     """
     errorCode = 200
     errorStatement = None
+    try:
+        in_data["client"]
+        in_data["image"]
+        in_data["user"]
+        in_data["img_grp"]
+        in_data["batch"]
+        in_data["location"]
+        in_data["filename"]
+    except KeyError:
+        errorCode = 400
+        errorStatement = "Missing information from client."
     return errorCode, errorStatement
 
 if __name__ == '__main__':
