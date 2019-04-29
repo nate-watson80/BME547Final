@@ -215,15 +215,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             string = response.json()["status"]
             self.serverResponse.setText(
                 QtWidgets.QApplication.translate("", string, None, -1))
-        else:
-            verImage = decodeImage(response.json()["image"], color=True)
-            self.plot_ax.clear()
-            self.plot_ax.imshow(verImage, interpolation='nearest')
-            self.plot_ax.axis('off')
-            self.plot_ax.figure.canvas.draw()
-            string = response.json()["status"]
-            self.serverResponse.setText(
-                QtWidgets.QApplication.translate("", string, None, -1))
+            return
+        verImage = decodeImage(response.json()["image"], color=True)
+        self.plot_ax.clear()
+        self.plot_ax.imshow(verImage, interpolation='nearest')
+        self.plot_ax.axis('off')
+        self.plot_ax.figure.canvas.draw()
+        string = response.json()["status"]
+        self.serverResponse.setText(
+            QtWidgets.QApplication.translate("", string, None, -1))
 
     def writeCSVData(self):
         """ Function to write the pulled data into a CSV file format.
@@ -297,6 +297,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Send the payload to the server
         response = requests.post(URL, json=payload)
+        if response.status_code == 400:
+            string = "Missing data from client."
+            self.serverResponse.setText(
+                QtWidgets.QApplication.translate("", string, None, -1))
+            return
+        if response.status_code == 406:
+            string = "Bad (non-string) data from client."
+            self.serverResponse.setText(
+                QtWidgets.QApplication.translate("", string, None, -1))
+            return
         image_rgb = decodeImage(response.json()['ver_Img'], color=True)
 
         # Display returned image
