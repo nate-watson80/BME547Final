@@ -26,8 +26,8 @@ import csv
 from encodedUi import Ui_MainWindow
 from launch_dialog import LaunchDialog
 
-# Change based on where server is deployed - Nate
-baseURL = "http://127.0.0.1:5000/"
+baseURL = "http://0.0.0.0:5000/"
+
 # baseURL = "http://vcm-9091.vm.duke.edu:5000/"
 
 
