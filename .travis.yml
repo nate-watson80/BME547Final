@@ -4,6 +4,6 @@ python:
 cache:
       - pip
 install:
-      - pip install -r freshRequirements.txt
+      - pip install -r requirements.txt
 script:
       - pytest -v *.py --pep8

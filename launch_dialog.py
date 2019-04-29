@@ -99,13 +99,15 @@ class LaunchDialog(QtWidgets.QDialog):
         user = self.get_user()
         batch = self.get_batch()
         grp = self.get_grp()
+        location = self.get_location()
 
         # Determine whether there are blank inputs
         status = True
         if (
             user == "" or
             batch == "" or
-            grp == ""
+            grp == "" or
+            location == ""
         ):
             error_message = "Please fill in all entries"
             status = False
@@ -232,6 +234,18 @@ class LaunchDialog(QtWidgets.QDialog):
         return grp_input
 
     def get_location(self):
+        """ Method for returning the user's information that was uploaded.
+
+        This method is used to determine the data that was uploaded by the
+        user in order to save it on the server.
+
+        Args:
+            None
+
+        Returns:
+            location_input (str) = String containg text passed through by user.
+
+        """
 
         location_input = self.location.text()
 
