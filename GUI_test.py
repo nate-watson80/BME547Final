@@ -214,10 +214,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         if response.ok is False:
             string = response.json()["status"]
-            self.serverResponse.setText(QtWidgets.QApplication.translate("",
-                                                                         string,
-                                                                         None,
-                                                                         -1))
+            self.serverResponse.setText(
+                QtWidgets.QApplication.translate("", string, None, -1))
         else:
             verImage = decodeImage(response.json()["image"], color=True)
             self.plot_ax.clear()
@@ -225,10 +223,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.plot_ax.axis('off')
             self.plot_ax.figure.canvas.draw()
             string = response.json()["status"]
-            self.serverResponse.setText(QtWidgets.QApplication.translate("",
-                                                                         string,
-                                                                         None,
-                                                                         -1))
+            self.serverResponse.setText(
+                QtWidgets.QApplication.translate("", string, None, -1))
 
     def writeCSVData(self):
         """ Function to write the pulled data into a CSV file format.
