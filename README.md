@@ -56,6 +56,9 @@ building the project. pip is utilized as a package manager for this project.
 
 * `LICENSE`: Licensing information for the project. MIT Open Source
 
+* `Demo-Video.mp4`: the demonstration video of our GUI client running and the
+Mongo Cloud saving all the needed information.
+
 * `logfile.log`: Debugging log for tasks run on the server.
 
 * `\docs`: Sphinx generated documentation for all modules.
