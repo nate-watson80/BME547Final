@@ -295,21 +295,44 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Send the payload to the server
         response = requests.post(URL, json=payload)
         image_rgb = decodeImage(response.json()['ver_Img'], color=True)
-        # Clear the image
+
+        # Display returned image
         self.plot_ax.clear()
         self.plot_ax.imshow(image_rgb, interpolation='nearest')
         self.plot_ax.axis('off')
         self.plot_ax.figure.canvas.draw()
 
+        # Determine size of image
+        size = self.determine_image_size(image_rgb)
         # Display the responses of from the analyzed image files.
         string = "results: " + str(response.json()['intensities']) + "\n" \
-            + "background: " + str(response.json()['background'])
+            + "background: " + str(response.json()['background']) + "\n" \
+            + "image size: {}".format(size)
 
         # Clear the textbox:
         self.serverResponse.setText(QtWidgets.QApplication.translate("",
                                                                      string,
                                                                      None,
                                                                      -1))
+
+    def determine_image_size(self, image_rgb):
+        """ Function to determine the size of the selected image
+
+        This function determine the size of the image that was selected to
+        be uploaded to the server.
+
+        Args:
+            image_rgb (numpy.array) = Processed image returned back from
+                server.
+
+        Returns:
+            size (tuple) = Tuple containing the number of rows and columns of
+                image.
+
+        """
+        size = image_rgb.shape
+
+        return size
 
     def testServer(self):
         """ Function attached to the test the server button

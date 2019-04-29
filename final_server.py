@@ -59,7 +59,7 @@ def init_mongoDB():
     return db
 
 
-db = init_mongoDB()  # use a global variable for database object
+db = init_mongoDB()  # Use a global variable for database object
 
 
 @app.route("/", methods=['GET'])

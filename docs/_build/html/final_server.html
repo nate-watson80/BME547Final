@@ -43,7 +43,7 @@
 <code class="descclassname">final_server.</code><code class="descname">circlePixelID</code><span class="sig-paren">(</span><em>circleData</em><span class="sig-paren">)</span><a class="headerlink" href="#final_server.circlePixelID" title="Permalink to this definition">¶</a></dt>
 <dd><p>Identifies all pixels within a circle</p>
 <p>Takes one circle centerpoint location and radius and calculates all pixel
-coords within the radius from that center location</p>
+coords within the radius from that center location.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -62,17 +62,25 @@ for a circle in pattern</td>
 <dl class="function">
 <dt id="final_server.decodeImage">
 <code class="descclassname">final_server.</code><code class="descname">decodeImage</code><span class="sig-paren">(</span><em>str_encoded_img</em>, <em>color=False</em><span class="sig-paren">)</span><a class="headerlink" href="#final_server.decodeImage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Takes an base 64 encoded image and converts it to a image array. Has
+<dd><p>Decodes and converts image string into image array</p>
+<p>Takes an base 64 encoded image and converts it to a image array. Has
 the option to conserve the original color or just as a greyscale.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>str_encoded_img</strong> (<em>str</em>) – base 64 encoded image</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>str_encoded_img</strong> (<em>str</em>) – base 64 encoded image string</li>
+<li><strong>color</strong> (<em>bool</em>) – flag to indicate whether image is color or grayscale
+(by default, B&amp;W)</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy array image matrix</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">numpy array image matrix</p>
+</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">orig_img (np.array)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">orig_img (np.array)</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -81,12 +89,13 @@ the option to conserve the original color or just as a greyscale.</p>
 <dl class="function">
 <dt id="final_server.encodeImage">
 <code class="descclassname">final_server.</code><code class="descname">encodeImage</code><span class="sig-paren">(</span><em>np_img_array</em><span class="sig-paren">)</span><a class="headerlink" href="#final_server.encodeImage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Encodes the np.array image matrix into a base 64 encoded string</p>
+<dd><p>Encodes an image array into base 64 encoded string</p>
+<p>Encodes the np.array image matrix into a base 64 encoded string.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>np_img_array</strong> (<em>np.array</em>) – just an image array</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>np_img_array</strong> (<em>np.array</em>) – numpy array image matrix</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">base 64 encoded image string</td>
 </tr>
@@ -99,9 +108,10 @@ the option to conserve the original color or just as a greyscale.</p>
 <dl class="function">
 <dt id="final_server.generatePatternMasks">
 <code class="descclassname">final_server.</code><code class="descname">generatePatternMasks</code><span class="sig-paren">(</span><em>spot_info</em>, <em>shape</em><span class="sig-paren">)</span><a class="headerlink" href="#final_server.generatePatternMasks" title="Permalink to this definition">¶</a></dt>
-<dd><p>generate pattern from json encoded circle locations
-and generate masks for spots and bgMask. This is important for efficient
-quantification of brightness in the spots and background within the image</p>
+<dd><p>Creates masks from the pattern for later analysis of image</p>
+<p>Generates pattern from JSON encoded circle locations and generates masks
+for spots and bgMask. This is important for efficient quantification of
+brightness in the spots and background within the image.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -128,10 +138,10 @@ bgMask (np array): the masks for the background wihin the image</p>
 <dl class="function">
 <dt id="final_server.get_patternDict">
 <code class="descclassname">final_server.</code><code class="descname">get_patternDict</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#final_server.get_patternDict" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>finds the pattern from the batch name input from the client from the</dt>
-<dd>MongoDB. Then returns the encoded pattern!</dd>
-</dl>
+<dd><p>Gets pattern information from the database</p>
+<p>Takes the pattern from the batch name input on the client, searches
+MongoDB ‘patterns’ collection for this pattern, and returns a dictionary
+with information about the pattern for this specific batch type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -152,7 +162,7 @@ bgMask (np array): the masks for the background wihin the image</p>
 
 <dl class="function">
 <dt id="final_server.imageUpload">
-<code class="descclassname">final_server.</code><code class="descname">imageUpload</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#final_server.imageUpload" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">final_server.</code><code class="descname">imageUpload</code><span class="sig-paren">(</span><em>in_data</em><span class="sig-paren">)</span><a class="headerlink" href="#final_server.imageUpload" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uploads and processes an image</p>
 <p>The core function of the server, takes in a base64 encoded image
 and other associated data with it (which pattern to match to the image,
@@ -165,12 +175,33 @@ the MongoDB and returned to the user.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>in_data</strong> (<em>json/dictionary</em>) – b64 encoded image, batch/pattern name, more</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>in_data</strong> (<em>dict</em>) – b64 encoded image, batch/pattern name, more</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">processed image, data, and more
-errorCode (int): HTTP status code</td>
+statusCode (int): HTTP status code</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">matchedData (string)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">matched_data (dict)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="final_server.imageUploadWrapper">
+<code class="descclassname">final_server.</code><code class="descname">imageUploadWrapper</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#final_server.imageUploadWrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>POST wrapper for imageUpload</p>
+<p>Receives POST data, sends data to imageUpload, receives output from
+imageUpload, and then posts the data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>POST</em>) – b64 encoded image, batch/pattern name, more</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">processed image, data, and more
+statusCode (int): HTTP status code</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">matchedData (jsonify(dict))</td>
 </tr>
 </tbody>
 </table>
@@ -181,7 +212,7 @@ errorCode (int): HTTP status code</td>
 <code class="descclassname">final_server.</code><code class="descname">init_mongoDB</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#final_server.init_mongoDB" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes the MongoDB</p>
 <p>Creates database object (which is stored to a global variable “db”)
-which contains connection info to MongoDB database and MongoDB collection
+which contains connection info to MongoDB database and MongoDB namespace
 “Detector_Software”</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -284,23 +315,24 @@ large as the original image to show that circles were found).</p>
 <dl class="function">
 <dt id="final_server.pullAllData">
 <code class="descclassname">final_server.</code><code class="descname">pullAllData</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#final_server.pullAllData" title="Permalink to this definition">¶</a></dt>
-<dd><p>sends all analyzed data back in a json with fileNames and list of list
+<dd><p>Pulls all available data from the database</p>
+<p>Sends all analyzed data back in a json with fileNames and list of list
 of all “spots” intensities and backgrounds.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>db.d4Images</strong> (<em>Mongo db collection</em>) – Mongo DB collection with processed</li>
-<li><strong>data</strong> – </li>
-</ul>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>db.d4Images</strong> (<em>Mongo db collection</em>) – Mongo DB collection with processed
+data</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>data dictionary with filename, spots, and</dt>
+<dd>background info</dd>
+</dl>
+<p>statusCode (int): HTTP status code</p>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Processed data return</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">payload (jsonify(dict))</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">payload (jsonify(dict))</td>
 </tr>
 </tbody>
 </table>
@@ -309,7 +341,22 @@ of all “spots” intensities and backgrounds.</p>
 <dl class="function">
 <dt id="final_server.pullImage">
 <code class="descclassname">final_server.</code><code class="descname">pullImage</code><span class="sig-paren">(</span><em>qFileName</em><span class="sig-paren">)</span><a class="headerlink" href="#final_server.pullImage" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Pulls an image for display from the database</p>
+<p>Given an image’s filename, looks in the database for the image and
+returns the image to the client.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>qFileName</strong> (<em>string</em>) – filename of the image for lookup</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">dictionary of image information</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">payload (jsonify(dict))</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="final_server.server_on">
@@ -322,7 +369,10 @@ of all “spots” intensities and backgrounds.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> – </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Server status</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">describes the server’s status
+statusCode (int): HTTP status code</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">status (string)</td>
 </tr>
 </tbody>
 </table>
@@ -331,10 +381,10 @@ of all “spots” intensities and backgrounds.</p>
 <dl class="function">
 <dt id="final_server.templateMatch8b">
 <code class="descclassname">final_server.</code><code class="descname">templateMatch8b</code><span class="sig-paren">(</span><em>image</em>, <em>pattern</em><span class="sig-paren">)</span><a class="headerlink" href="#final_server.templateMatch8b" title="Permalink to this definition">¶</a></dt>
-<dd><p>The core template matching algorithm. calculates the correlation
-between the pattern and the image at all points in 2d sliding window format
-weighs the correlations higher in the center of the image where the spots
-should be.</p>
+<dd><p>Core template matching algorithm to compare image to pattern</p>
+<p>Calculates the correlation between the pattern and the image at all points
+in 2d sliding window format weighs the correlations higher in the center of
+the image where the spots should be.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -366,16 +416,18 @@ should be.</p>
 <dl class="function">
 <dt id="final_server.validate_image">
 <code class="descclassname">final_server.</code><code class="descname">validate_image</code><span class="sig-paren">(</span><em>in_data</em><span class="sig-paren">)</span><a class="headerlink" href="#final_server.validate_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>validates the input data to make sure it’s formatted as expected</p>
+<dd><p>Validates data received from client</p>
+<p>Validates the input data to make sure it’s formatted as expected.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>in_data</strong> (<em>dictionary</em>) – the request.json in_Data from the client</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">server error code and message</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">server error code
+errorStatement (str): error message</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">errorCode, errorStatement (int, Str)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">errorCode (int)</td>
 </tr>
 </tbody>
 </table>

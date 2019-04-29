@@ -40,32 +40,258 @@
 <p>&#64;author: Mars</p>
 <dl class="class">
 <dt id="GUI_test.MainWindow">
-<em class="property">class </em><code class="descclassname">GUI_test.</code><code class="descname">MainWindow</code><span class="sig-paren">(</span><em>user</em>, <em>batch</em>, <em>img_grp</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#GUI_test.MainWindow" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">GUI_test.</code><code class="descname">MainWindow</code><span class="sig-paren">(</span><em>user</em>, <em>batch</em>, <em>img_grp</em>, <em>location</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#GUI_test.MainWindow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code>, <a class="reference internal" href="encodedUi.html#encodedUi.Ui_MainWindow" title="encodedUi.Ui_MainWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">encodedUi.Ui_MainWindow</span></code></a></p>
+<p>This is the UI class for the main GUI window.</p>
+<p>This class is to control the visual layouts of the main UI display.
+There are several buttons cooresponding to communicating with the server
+including selecting an image, uploading an image, and exporting data.
+Additionally, once images are uploaded they are displayed utilizing
+matplotlib imread() command.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>QMainWindow</strong> (<em>class</em>) – </li>
+<li><strong>Ui_MainWindow</strong> (<em>class</em>) – to the functionality of all the widgets in window.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="GUI_test.MainWindow.readImgButton">
+<code class="descname">readImgButton</code><a class="headerlink" href="#GUI_test.MainWindow.readImgButton" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">class ‘PyQt5.QtWidgets.QPushButton’</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="GUI_test.MainWindow.testServerButton">
+<code class="descname">testServerButton</code><a class="headerlink" href="#GUI_test.MainWindow.testServerButton" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">class ‘PyQt5.QtWidgets.QPushButton’</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="GUI_test.MainWindow.uploadImgButton">
+<code class="descname">uploadImgButton</code><a class="headerlink" href="#GUI_test.MainWindow.uploadImgButton" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">class ‘PyQt5.QtWidgets.QPushButton’</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="GUI_test.MainWindow.pullAllData">
+<code class="descname">pullAllData</code><a class="headerlink" href="#GUI_test.MainWindow.pullAllData" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">class ‘PyQt5.QtWidgets.QPushButton’</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="GUI_test.MainWindow.submitQuery">
+<code class="descname">submitQuery</code><a class="headerlink" href="#GUI_test.MainWindow.submitQuery" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">class ‘PyQt5.QtWidgets.QPushButton’</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="GUI_test.MainWindow.plotting_widget">
+<code class="descname">plotting_widget</code><a class="headerlink" href="#GUI_test.MainWindow.plotting_widget" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">class ‘PyQt5.QtWidgets.QWidget’</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="GUI_test.MainWindow.user">
+<code class="descname">user</code><a class="headerlink" href="#GUI_test.MainWindow.user" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="GUI_test.MainWindow.batch">
+<code class="descname">batch</code><a class="headerlink" href="#GUI_test.MainWindow.batch" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="GUI_test.MainWindow.img_grp">
+<code class="descname">img_grp</code><a class="headerlink" href="#GUI_test.MainWindow.img_grp" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="GUI_test.MainWindow.location">
+<code class="descname">location</code><a class="headerlink" href="#GUI_test.MainWindow.location" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="GUI_test.MainWindow.openImage">
 <code class="descname">openImage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_test.MainWindow.openImage" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Method for opening images that have been selected from OS</p>
+<p>This function is used for the UI to open up the image that has been
+selected from the computer. It functions primarily by using the
+getOpenFileName method that is from the QFileDialog class in PyQt.
+Next, logical operations are run to see if the file is a tiff file.
+For D4 images, tiff files are the only file format that is accepted
+as input. Image is then plotted using matplotlib.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="GUI_test.MainWindow.queryImage">
 <code class="descname">queryImage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_test.MainWindow.queryImage" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Method for querying the database for stored images.</p>
+<p>This function is associated with the get image button. This image
+takes in a string from the text box and will send a request to the
+server in order to obtain the image. Next, it will display the image
+utilizing matplotlib once it has been fetched from the server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="GUI_test.MainWindow.testServer">
 <code class="descname">testServer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_test.MainWindow.testServer" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Function attached to the test the server button</p>
+<p>Simply this function will test to see if the server is up and running.
+Will display text to verify that the server is up and running.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="GUI_test.MainWindow.uploadImage">
 <code class="descname">uploadImage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_test.MainWindow.uploadImage" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Function attached to the upload image button.</p>
+<p>This function is tied to the upload image to server function. The
+way that this works is via a requests.post command of a payload
+containing the client, image file, username, group number, batch,
+location, and filename. The iamge is encoded to utf-8 format prior
+to sending out. The response that the post request will recieve will
+be the results of the image including the mean spot intensities as well
+as the background intensities.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="GUI_test.MainWindow.writeCSVData">
 <code class="descname">writeCSVData</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_test.MainWindow.writeCSVData" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Function to write the pulled data into a CSV file format.</p>
+<p>This function will respond to the pull all data button in the main
+window UI. Effectively this function will return all of the data that
+has been previously stored on the server. The raw data that has been
+obtained will then be exported to a CSV file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -83,7 +309,7 @@ back to the user.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>str_encoded_img</strong> (<em>str</em>) – </li>
-<li><strong>color</strong> (<em>bool</em>) – a color file.</li>
+<li><strong>color</strong> (<em>bool</em>) – a color file. Most images will be grayscale.</li>
 </ul>
 </td>
 </tr>
@@ -95,9 +321,47 @@ back to the user.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="GUI_test.get_launch_data">
+<code class="descclassname">GUI_test.</code><code class="descname">get_launch_data</code><span class="sig-paren">(</span><em>window</em><span class="sig-paren">)</span><a class="headerlink" href="#GUI_test.get_launch_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to obtain the data that was entered in launch window</p>
+<p>This function is utilized to obtain the data that was entered by the
+client in the launch window. This works by going into the window class
+and running the get_data() method. The data is then parsed from the dict
+and returned.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>Args:</dt>
+<dd>window (class) = LaunchDialog class that was begun in main()</dd>
+<dt>Returns:</dt>
+<dd><p class="first">user (str) = String containing the username</p>
+<p>batch (str) = String containing the batch name</p>
+<p>img_grp (str) = String containing the image group</p>
+<p class="last">location (str) = String containing location data</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
 <dt id="GUI_test.main">
 <code class="descclassname">GUI_test.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#GUI_test.main" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Main operating script</p>
+<p>main() is the main function that is calling the other procedures and
+functions. First, it will call the LaunchWindow() class and display and
+wait for the proper user inputs. Next, it will open the main UI window.
+In this window, all of the image processing tasks can be completed if
+necesssary.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 

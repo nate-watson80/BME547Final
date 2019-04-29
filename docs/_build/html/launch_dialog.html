@@ -49,17 +49,16 @@ as well as the data group. When all of the appropriate information
 is transfered, the user can proceed to the next window.</p>
 <dl class="method">
 <dt id="launch_dialog.LaunchDialog.batch_changed">
-<code class="descname">batch_changed</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#launch_dialog.LaunchDialog.batch_changed" title="Permalink to this definition">¶</a></dt>
+<code class="descname">batch_changed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#launch_dialog.LaunchDialog.batch_changed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method for handling if the the text has been changed.</p>
 <p>This function is utilized to handle any changes that have
 occured when uploading the user into the text box.</p>
+<p>Args:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>(</strong><strong>) </strong><strong>=</strong> (<em>text</em>) – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None</td>
 </tr>
 </tbody>
 </table>
@@ -116,7 +115,7 @@ passing the data back as a dictionary.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>(</strong><strong>) </strong><strong>=</strong> (<em>parent</em>) – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parent</strong> (<em>class</em>) – </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
 <dt>output_dict (dict) = Dictionary containing all of the user</dt>
@@ -141,6 +140,24 @@ user in order to save it on the server.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> – </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">grp_input (str) = String containg text passed through by user.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="launch_dialog.LaunchDialog.get_location">
+<code class="descname">get_location</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#launch_dialog.LaunchDialog.get_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for returning the user’s information that was uploaded.</p>
+<p>This method is used to determine the data that was uploaded by the
+user in order to save it on the server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>None</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">location_input (str) = String containg text passed through by user.</td>
 </tr>
 </tbody>
 </table>
@@ -175,6 +192,24 @@ occured when uploading the user into the text box.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>(</strong><strong>) </strong><strong>=</strong> (<em>text</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="launch_dialog.LaunchDialog.location_changed">
+<code class="descname">location_changed</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#launch_dialog.LaunchDialog.location_changed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for handling if the the text has been changed.</p>
+<p>This function is utilized to handle any changes that have
+occured when uploading the user into the text box.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>text</strong> (<em>str</em>) – </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
 </tr>
