@@ -1,6 +1,6 @@
 # D4 Detector Software
 ### BME 547: Medical Software Design
-### Final Version is tagged as [v1.0.0](https://github.com/nate-watson80/BME547Final/releases/tag/v1.0.0)
+### Final Version is tagged as [v1.0.1](https://github.com/nate-watson80/BME547Final/releases/tag/v1.0.1)
 ### Jason Liu, Nate Watson, Jason Cooper
 
 
