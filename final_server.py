@@ -211,18 +211,16 @@ def pullImage(qFileName):
 
     Returns:
         payload (jsonify(dict)): dictionary of image information
-
+        statusCode (int): HTTP status code
     """
     file_exists, msg, data = verifyFileName(qFileName)
     if file_exists:
         verImage = db.d4MatchedImg.find_one({"_id": data["matched_image"]})
-        payload = {"success": True,
-                   "image": str(verImage["image"]),
+        payload = {"image": str(verImage["image"]),
                    "status": msg}
         statusCode = 200
     else:
-        payload = {"success": False,
-                   "status": msg}
+        payload = {"status": msg}
         statusCode = 400
     return jsonify(payload), statusCode
 
