@@ -59,7 +59,7 @@ def init_mongoDB():
     return db
 
 
-db = init_mongoDB()  # Use a global variable for database object
+db = init_mongoDB()  # use a global variable for database object
 
 
 @app.route("/", methods=['GET'])
@@ -206,20 +206,31 @@ def pullImage(qFileName):
     Returns:
         payload (jsonify(dict)): dictionary of image information
     """
-    if verifyFileName(qFileName):
-        data = db.d4Images.find_one({"filename": qFileName})
+    file_exists, msg, data = verifyFileName(qFileName)
+    if file_exists:
         verImage = db.d4MatchedImg.find_one({"_id": data["matched_image"]})
-        payload = {"status": "found image",
-                   "image": str(verImage["image"])}
+        payload = {"success": True,
+                   "image": str(verImage["image"]),
+                   "status": msg}
         statusCode = 200
-        return jsonify(payload), statusCode
     else:
+        payload = {"success": False,
+                   "status": msg}
         statusCode = 400
-        return "missing", statusCode
+    return jsonify(payload), statusCode
 
 
-def verifyFileName(fileName):
-    return True
+def verifyFileName(qFileName):
+    data = db.d4Images.find_one({"filename": qFileName})
+    if data is None:
+        file_exists = False
+        msg = "Filename "+qFileName+" could not be found."
+        logging.error("pullImage: "+msg)
+    else:
+        file_exists = True
+        msg = "Filename "+qFileName+" is displayed above."
+        logging.info("pullImage: "+msg)
+    return file_exists, msg, data
 
 
 def log_to_DB(log_data, action):
